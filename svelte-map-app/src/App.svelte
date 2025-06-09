@@ -9,9 +9,11 @@
   let map;
 
   onMount(() => {
-    map = L.map('map').setView([51.505, -0.09], 13);
+    map = L.map('map').setView([0, 0], 2);
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 5,
+      minZoom: 1,
       attribution: '© ArcGIS, Powered by Esri'
     }).addTo(map);
   });
