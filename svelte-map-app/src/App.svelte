@@ -2,9 +2,26 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
+
+  import { onMount } from 'svelte';
+  import L from 'leaflet';
+
+  let map;
+
+  onMount(() => {
+    map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+  });
 </script>
 
-<main>
+
+<div id="map"></div>
+<!-- <main>
+  <div id="map"></div>
   <div>
     <a href="https://vite.dev" target="_blank" rel="noreferrer">
       <img src={viteLogo} class="logo" alt="Vite Logo" />
@@ -13,7 +30,7 @@
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
     </a>
   </div>
-  <h1>Vite + Svelte</h1>
+  <h1>Viteeeee + Svelte</h1>
 
   <div class="card">
     <Counter />
@@ -26,9 +43,10 @@
   <p class="read-the-docs">
     Click on the Vite and Svelte logos to learn more
   </p>
-</main>
+</main> -->
 
 <style>
+  #map { height: 100vh; }
   .logo {
     height: 6em;
     padding: 1.5em;
