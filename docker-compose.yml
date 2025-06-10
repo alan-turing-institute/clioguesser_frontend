@@ -6,10 +6,10 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./svelte-map-app:/app
+      - ./my-app:/app
       - /app/node_modules
     command: npm run dev -- --host
-    container_name: clioguesser-frontend-dev
+    container_name: clioguesser-frontend-dev-kit
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
