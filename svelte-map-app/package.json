@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "geojson-schema": "^1.0.5",
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "prettier-plugin-svelte": "^3.4.0"
   }
 }
