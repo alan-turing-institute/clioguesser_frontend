@@ -7,13 +7,16 @@ services:
       - "5173:5173"
     volumes:
       - ./my-app:/app
-      - /app/node_modules
+      - clioguesser_frontend:/app/node_modules
     command: npm run dev -- --host
     container_name: clioguesser-frontend-dev-kit
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - clioguesser-net
+
+volumes:
+  clioguesser_frontend:
 
 networks:
   clioguesser-net:
