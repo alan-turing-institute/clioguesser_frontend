@@ -1,0 +1,4 @@
+ignore_front_matter true
+style "mystyle.rb"
+# See https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md
+rules "~MD041,~MD002,~MD036,~MD033"
