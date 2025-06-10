@@ -4,12 +4,16 @@
   import Button from "./lib/Button.svelte";
   import { shuffledYears } from "./lib/Shuffle.js";
 
-  let guess = $state("");
-  let guessAge = $state("");
-  let minYear = 1500;
-  let maxYear = 2024;
-  // eslint-disable-next-line no-unused-vars
-  let trueAge = 1745;
+  function pick_year({ min_year, max_year }) {
+    return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
+  }
+
+  let guess = "";
+  let guessAge = "";
+  let min_year = 1500;
+  let max_year = 2024;
+  let score = null;
+  let trueAge = pick_year({ min_year: min_year, max_year: max_year });
 
   async function fetchGeojsonFeatures() {
     try {
@@ -43,6 +47,7 @@
   let map;
 
   onMount(() => {
+    // TODO: Update so we use this instead of a random year
     console.log("First year", shuffledYears.shift());
 
     map = L.map("map", { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
@@ -72,6 +77,23 @@
       });
     })();
   });
+  async function getScore() {
+    const response = await fetch(
+      `http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      score = data.score;
+    } else {
+      score = "Error fetching score";
+    }
+  }
 </script>
 
 <main>
@@ -84,11 +106,17 @@
   
   <p>Age:
     <input bind:value={guess} placeholder="enter your guess" />
-    <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+    <Button
+      class="primary sm"
+      on:click={async () => {
+        guessAge = guess;
+        await getScore();
+      }}
+      >Submit</Button
+    >
   </p>
 
-  
-  {#if guessAge != ""}
+  {#if score !== null}
     <p>
       The actual age of the map is {trueAge} years.
     </p>
@@ -101,6 +129,7 @@
         <span class="incorrect">Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear</span>
       {/if}
     </p>
+    <p>Score: {score}</p>
   {/if}
 
   <div id="map"></div>
