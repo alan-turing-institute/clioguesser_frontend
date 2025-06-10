@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
   import L from 'leaflet';
 
+  let a;
 
   let geojsonFeature = {
     type:"MultiPolygon",
