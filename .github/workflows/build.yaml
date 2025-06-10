@@ -17,6 +17,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: svelte-map-app
+      - name: prettier version
+        run: npx prettier --version
+        working-directory: svelte-map-app
       - name: Check svelte
         run: npx prettier src/App.svelte > svelte.txt
         working-directory: svelte-map-app
