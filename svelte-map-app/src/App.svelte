@@ -3,17 +3,15 @@
   import L from "leaflet";
   import Button from "./lib/Button.svelte";
 
-  // Utility function to pick a random year between min_year and max_year (inclusive)
   function pick_year({ min_year, max_year }) {
     return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
   }
 
-  let guess = $state("");
-  let guessAge = $state("");
+  let guess = "";
+  let guessAge = "";
   let min_year = 1500;
   let max_year = 2024;
   let score = null;
-  // eslint-disable-next-line no-unused-vars
   let trueAge = pick_year({ min_year: min_year, max_year: max_year });
 
   async function fetchGeojsonFeatures() {
