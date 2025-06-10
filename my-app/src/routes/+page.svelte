@@ -3,7 +3,7 @@
 	import Button from '$lib/Button.svelte';
 	import { shuffledYears } from '$lib/Shuffle.js';
 
-	function pick_year({ min_year, max_year }) {
+	async function pick_year({ min_year, max_year }) {
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
 	}
 
@@ -12,7 +12,7 @@
 	let min_year = 1500;
 	let max_year = 2024;
 	let score = null;
-  let trueAge = pick_year({ min_year: min_year, max_year: max_year });
+  let trueAge = null;
 
   async function fetchGeojsonFeatures() {
     try {
@@ -43,12 +43,36 @@
     }
   }
 
+
 	let map;
+  
+  async function updateMap() {
+		const features = await fetchGeojsonFeatures();
+		trueAge = await pick_year({ min_year: min_year, max_year: max_year });
+		features.forEach((feature) => {
+			L.geoJSON(feature.geometry, {
+				style: {
+					color: "black",
+					weight: 1,
+					opacity: 1,
+					fill: true,
+					fillColor: feature.colour,
+					fillOpacity: 1,
+				},
+			}).addTo(map);
+		});
+	}
+
+	async function getNewMap() {
+		await updateMap();
+	}
+
 
 	onMount(async () => {
     // TODO: Update so we use this instead of a random year
     console.log("First year", shuffledYears.shift());
 		const L = await import('leaflet');
+		trueAge = await pick_year({ min_year: min_year, max_year: max_year });
 
     map = L.map("map", { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
@@ -60,22 +84,7 @@
         attribution: "© ArcGIS, Powered by Esri",
       },
     ).addTo(map);
-
-    (async () => {
-      const features = await fetchGeojsonFeatures();
-      features.forEach((feature) => {
-        L.geoJSON(feature.geometry, {
-          style: {
-            color: "black",
-            weight: 1,
-            opacity: 1,
-            fill: true,
-            fillColor: feature.colour,
-            fillOpacity: 1,
-          },
-        }).addTo(map);
-      });
-    })();
+		await updateMap();
   });
   async function getScore() {
     const response = await fetch(
