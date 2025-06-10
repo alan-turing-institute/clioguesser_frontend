@@ -1,10 +1,11 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
-
   import { onMount } from 'svelte';
   import L from 'leaflet';
+  import Button from "./lib/Button.svelte"
+  
+  let guess = $state('');
+  let guessAge = $state('');
+  let trueAge = 1745
 
   let map;
 
@@ -12,15 +13,28 @@
     map = L.map('map').setView([0, 0], 2);
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 5,
+      maxZoom: 10,
       minZoom: 1,
       attribution: '© ArcGIS, Powered by Esri'
     }).addTo(map);
   });
 </script>
 
+<main>
+  <h1>Clioguesser</h1>
+  <p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+  <p>Age (to the nearest decade):</p>
 
-<div id="map"></div>
+  <input bind:value={guess} placeholder="enter your guess" />
+  <Button class="primary sm" on:click={() => guessAge = guess}>
+    Submit
+  </Button>
+
+  <p>Your guess: {guessAge || ''} CE</p>
+
+  <div id="map"></div>
+  <p> Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.</p>
+</main>
 <!-- <main>
   <div id="map"></div>
   <div>
