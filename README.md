@@ -1,7 +1,9 @@
 # clioguesser_frontend
+
 Front end repo for the Clioguesser historical geography game
 
 ## For running the app
+
 start npm server:
 
 ```bash
@@ -15,4 +17,3 @@ cd src/svelte-map-app
 <!-- npm install vite -->
 npm run dev
 ```
-
