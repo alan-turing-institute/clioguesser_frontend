@@ -64,14 +64,16 @@
 
 <main>
   <h1>Clioguesser</h1>
+  
   <p>
     Do you think you know your history? Guess the age of this map based on the
     polity outlines.
   </p>
-  <p>Age (to the nearest decade):</p>
-
-  <input bind:value={guess} placeholder="enter your guess" />
-  <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+  
+  <p>Age:
+    <input bind:value={guess} placeholder="enter your guess" />
+    <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+  </p>
 
   <p>Your guess: {guessAge || ""} CE</p>
 
