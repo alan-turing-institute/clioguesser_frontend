@@ -17,6 +17,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: svelte-map-app
+      - name: Check svelte
+        run: npx prettier src/App.svelte > svelte.txt
+        working-directory: svelte-map-app
+      - name: Do diff
+        run: diff svelte.txt src/App.svelte
+        working-directory: svelte-map-app
       - name: Check formatting
         run: npx prettier --check ..
         working-directory: svelte-map-app
