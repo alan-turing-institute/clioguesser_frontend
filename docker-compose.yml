@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./svelte-map-app:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    container_name: clioguesser-frontend-dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - clioguesser-net
+
+networks:
+  clioguesser-net:
+    name: clioguesser-net
+    driver: bridge
