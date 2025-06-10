@@ -8,6 +8,28 @@
   let guessAge = $state("");
   let trueAge = 1745;
 
+  function getCentroid(polygon) {
+    // console.log("lng_lat", multipolygon);
+    // let polygon = multipolygon.coordinates[0];
+    // if (!polygon) {
+      // return;
+    // }
+    console.log("polygon", polygon.length);
+    // console.log("polygon[0]", polygon[0].length);
+    let first_loop = polygon[0];
+    if (!first_loop) {
+      return;
+    }
+    let x = 0, y = 0, n = 0;
+    first_loop.forEach(([lng,lat]) => {
+      x += lng;
+      y += lat;
+      n++;
+    });
+    return [y / n, x / n]; // [lat, lng]
+    // return [0,0];
+  }
+
   async function fetchGeojsonFeatures() {
     try {
       console.log("Getting data for year:", trueAge);
@@ -26,6 +48,7 @@
         return {
           geometry: JSON.parse(shape.geom_json),
           colour: shape.colour,
+          name: shape.name,
         };
       });
 
@@ -56,6 +79,17 @@
     (async () => {
       const features = await fetchGeojsonFeatures();
       features.forEach((feature) => {
+        if (feature.name !== "Spanish Empire") {
+          return;
+        }
+        feature.geometry.coordinates.forEach((polygon) => {
+          let centroid = getCentroid(polygon);
+          L.marker(
+            [centroid[0],centroid[1]],
+            {title: feature.name}
+          ).addTo(map);
+        });
+        console.log("Centroid for feature:", feature.name, feature.geometry.type);
         L.geoJSON(feature.geometry, {
           style: {
             color: "black",
@@ -73,12 +107,12 @@
 
 <main>
   <h1>Clioguesser</h1>
-  
+
   <p>
     Do you think you know your history? Guess the age of this map based on the
     polity outlines.
   </p>
-  
+
   <p>Age:
     <input bind:value={guess} placeholder="enter your guess" />
     <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
