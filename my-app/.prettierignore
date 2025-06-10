@@ -1,0 +1,13 @@
+<<<<<<< HEAD:my-app/.prettierignore
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+=======
+# Ignore artifacts:
+build
+coverage
+.git
+>>>>>>> e14ce19084a5cc85b07e8456ccb8bfe0ac267f04:svelte-map-app/.prettierignore

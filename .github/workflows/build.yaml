@@ -16,10 +16,10 @@ jobs:
           node-version: "22"
       - name: Install dependencies
         run: npm ci
-        working-directory: svelte-map-app
+        working-directory: my-app
       - name: Check formatting
         run: npx prettier --check ..
-        working-directory: svelte-map-app
+        working-directory: my-app
       - name: Build
         run: npm run build
-        working-directory: svelte-map-app
+        working-directory: my-app

@@ -1,0 +1,20 @@
+{
+<<<<<<< HEAD:my-app/.prettierrc
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "none",
+	"printWidth": 100,
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	]
+=======
+  "plugins": ["prettier-plugin-svelte"],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+>>>>>>> e14ce19084a5cc85b07e8456ccb8bfe0ac267f04:svelte-map-app/.prettierrc
+}
