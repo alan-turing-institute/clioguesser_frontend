@@ -139,5 +139,6 @@
 	}
 	input {
 		margin-right: 0.5rem;
+		color:black
 	}
 </style>
