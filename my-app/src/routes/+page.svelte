@@ -30,8 +30,7 @@
 
       const features = jsonData.shapes.map((shape) => {
         return {
-          geometry: JSON.parse(shape.geom_json),
-          colour: shape.colour,
+          geometry: JSON.parse(shape.geom_json),colour: shape.colour,
         };
       });
 
@@ -150,56 +149,3 @@
     >.
   </p>
 </div>
-
-<style>
-	html, body, #svelte {
-		height: 100%;
-		margin: 0;
-		padding: 0;
-	}
-	.container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		width: 100vw;
-		overflow: hidden;
-	}
-	.center-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin-bottom: 1rem;
-		z-index: 2;
-		padding: 2rem 2rem 1rem 2rem;
-		border-radius: 1rem;
-		box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-		max-width: 90vw;
-	}
-	#map {
-		flex: 1 1 auto;
-		height: 60vh;
-		width: 90vw;
-		max-width: 1200px;
-		max-height: 70vh;
-		margin: 1rem auto;
-		border-radius: 1rem;
-		overflow: hidden;
-		box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-		z-index: 1;
-	}
-	.footer {
-		text-align: center;
-		margin-top: 0.5rem;
-		color: #888;
-		z-index: 2;
-		padding: 0.5rem 1rem;
-		border-radius: 0.5rem;
-	}
-	input {
-		margin-right: 0.5rem;
-		color:black
-	}
-</style>
