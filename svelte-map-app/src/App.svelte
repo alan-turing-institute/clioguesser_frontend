@@ -117,7 +117,18 @@
   </p>
 
   {#if score !== null}
-    <p>Your guess: {guessAge || ""} CE</p>
+    <p>
+      The actual age of the map is {trueAge} years.
+    </p>
+    <p>
+      {#if guessAge == trueAge}
+        <span class="correct">Correct! Very impressive</span>
+      {:else if Math.abs(guessAge - trueAge) < 50}
+        <span class="incorrect">Nearly! You were only off by {Math.abs(guessAge - trueAge)} years, good try</span>
+      {:else}
+        <span class="incorrect">Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear</span>
+      {/if}
+    </p>
     <p>Score: {score}</p>
   {/if}
 
