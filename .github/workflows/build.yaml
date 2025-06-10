@@ -18,7 +18,8 @@ jobs:
         run: npm ci
         working-directory: svelte-map-app
       - name: Check formatting
-        run: npx prettier --check .
+        run: npx prettier --check ..
+        working-directory: svelte-map-app
       - name: Build
         run: npm run build
         working-directory: svelte-map-app
