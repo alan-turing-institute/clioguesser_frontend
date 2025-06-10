@@ -1,14 +1,16 @@
 <script>
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
+	import { shuffledYears } from '$lib/Shuffle.js';
 
 	let guess = $state('');
 	let guessAge = $state('');
 	// eslint-disable-next-line no-unused-vars
-	let trueAge = 1745;
+	let trueAge = shuffledYears.shift();
 
 	async function fetchGeojsonFeatures() {
 		try {
+			console.log('Getting data for year:', trueAge);
 			const response = await fetch(`http://localhost:8000/api/polities/?year=${trueAge}`, {
 				headers: {
 					'Content-Type': 'application/json'
@@ -35,6 +37,7 @@
 	let map;
 
 	onMount(async () => {
+		console.log('First year', trueAge);
 		const L = await import('leaflet');
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
@@ -66,22 +69,25 @@
 </script>
 
 <div class="containter">
-<h1>Clioguesser</h1>
+  <h1>Clioguesser</h1>
+  
+  <p>
+    Do you think you know your history? Guess the age of this map based on the
+    polity outlines.
+  </p>
+  
+  <p>Age:
+    <input bind:value={guess} placeholder="enter your guess" />
+    <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+  </p>
 
-<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+  <p>Your guess: {guessAge || ""} CE</p>
 
-<p>
-	Age:
-	<input bind:value={guess} placeholder="enter your guess" />
-	<Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
-</p>
-
-<p>Your guess: {guessAge || ''} CE</p>
-
-<div id="map"></div>
-<p>
-	Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
-</p>
+  <div id="map"></div>
+  <p>
+    Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a
+    >.
+  </p>
 </div>
 
 <style>
