@@ -32,5 +32,4 @@ docker compose up -d
    1. Installing pre-commit.
    1. Setting up the pre-commit hooks with `pre-commit install --install-hooks`.
    1. ESLint with Svelte plugin will now run whenever you do a `git commit` or if you run `pre-commit run`.
-1. Run prettier with `npx prettier . --write`.
-   Note that we could
+1. Run prettier with `cd svelte-map-app && npx prettier --write ..`.
