@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import L from "leaflet";
   import Button from "./lib/Button.svelte";
+  import { shuffledYears } from "./lib/Shuffle.js";
 
   function pick_year({ min_year, max_year }) {
     return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
@@ -16,6 +17,7 @@
 
   async function fetchGeojsonFeatures() {
     try {
+      console.log("Getting data for year:", trueAge);
       const response = await fetch(
         `http://localhost:8000/api/polities/?year=${trueAge}`,
         {
@@ -45,6 +47,8 @@
   let map;
 
   onMount(() => {
+    console.log("First year", shuffledYears.shift());
+
     map = L.map("map", { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
     L.tileLayer(
