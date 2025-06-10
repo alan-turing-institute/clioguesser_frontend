@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
 	import { shuffledYears } from '$lib/Shuffle.js';
@@ -26,10 +26,11 @@
 			const jsonData = await response.json();
 
 			const features = jsonData.shapes.map((shape) => {
+        console.log('Shape name:', shape.name);
 				return {
 					geometry: JSON.parse(shape.geom_json),
 					colour: shape.colour,
-					shape_id: shape.id
+					shape_name: shape.member_of || shape.name // Use member_of if available, otherwise use name
 				};
 			});
 
@@ -58,7 +59,7 @@
 				}
 			});
 
-			const groupId = feature.shape_id; // Assuming shape_id is the group identifier
+			const groupId = feature.shape_name; // Assuming shape_id is the group identifier
 			if (!groups[groupId]) {
 				groups[groupId] = L.layerGroup();
 			}
