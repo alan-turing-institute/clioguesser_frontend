@@ -47,6 +47,7 @@
   let map;
 
   onMount(() => {
+    // TODO: Update so we use this instead of a random year
     console.log("First year", shuffledYears.shift());
 
     map = L.map("map", { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
