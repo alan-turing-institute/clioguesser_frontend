@@ -1,5 +1,14 @@
 {
   "devDependencies": {
-    "leaflet": "^1.9.4"
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "leaflet": "^1.9.4",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.4.0"
+  }
+  "scripts": {
+    "lint": "eslint . --ext .js,.svelte",
+    "format": "prettier --write ."
   }
 }
