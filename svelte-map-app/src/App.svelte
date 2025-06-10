@@ -17,7 +17,7 @@
             "Content-Type": "application/json",
           },
           credentials: "include",
-        }
+        },
       );
       const jsonData = await response.json();
 
@@ -44,7 +44,7 @@
         maxZoom: 10,
         minZoom: 1,
         attribution: "© ArcGIS, Powered by Esri",
-      }
+      },
     ).addTo(map);
 
     (async () => {

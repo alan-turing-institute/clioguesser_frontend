@@ -21,7 +21,8 @@ npm run dev
 ## Running the app in a docker container
 
 Start the docker stack containing the front end. This is currently setup to work in dev mode.
-```
+
+```bash
 docker compose up -d
 ```
 
