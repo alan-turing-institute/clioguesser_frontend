@@ -20,6 +20,9 @@ jobs:
       - name: prettier version
         run: npx prettier --version
         working-directory: svelte-map-app
+      - name: prettier svelte version
+        run: npm list prettier-plugin-svelte
+        working-directory: svelte-map-app
       - name: Check svelte
         run: npx prettier src/App.svelte > svelte.txt
         working-directory: svelte-map-app
