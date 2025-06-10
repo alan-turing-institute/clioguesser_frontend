@@ -22,3 +22,4 @@ repos:
         additional_dependencies:
           - eslint@9.28.0
           - eslint-plugin-svelte@3.9.1
+          - "@eslint/js"
