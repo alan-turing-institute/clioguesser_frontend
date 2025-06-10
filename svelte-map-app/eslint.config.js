@@ -1,5 +1,6 @@
 // eslint.config.js
-import js from "@eslint/js";
+// import js from "@eslint/js";
+import js from '@eslint/js/src/index.js';
 import svelte from "eslint-plugin-svelte";
 import globals from "globals";
 import svelteConfig from "./svelte.config.js";
