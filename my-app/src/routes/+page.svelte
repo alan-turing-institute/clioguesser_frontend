@@ -37,7 +37,7 @@
 	let map;
 
 	onMount(async () => {
-		console.log('First year', trueAge);
+		console.log('First year', shuffledYears.shift());
 		const L = await import('leaflet');
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
@@ -68,46 +68,76 @@
 	});
 </script>
 
-<div class="containter">
-  <h1>Clioguesser</h1>
-  
-  <p>
-    Do you think you know your history? Guess the age of this map based on the
-    polity outlines.
-  </p>
-  
-  <p>Age:
-    <input bind:value={guess} placeholder="enter your guess" />
-    <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
-  </p>
+<div class="container">
+	<div class="center-content">
+		<h1>Clioguesser</h1>
+		
+		<p>
+			Do you think you know your history? Guess the age of this map based on the
+			polity outlines.
+		</p>
+		
+		<p>Age:
+			<input bind:value={guess} placeholder="enter your guess" />
+			<Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+		</p>
 
-  <p>Your guess: {guessAge || ""} CE</p>
-
-  <div id="map"></div>
-  <p>
-    Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a
-    >.
-  </p>
+		<p>Your guess: {guessAge || ""} CE</p>
+	</div>
+	<div id="map"></div>
+	<p class="footer">
+		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
+	</p>
 </div>
 
 <style>
-	#map {
+	html, body, #svelte {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		height: 100vh;
 		width: 100vw;
+		overflow: hidden;
 	}
-	.logo {
-		height: 6em;
-		padding: 1.5em;
-		will-change: filter;
-		transition: filter 300ms;
+	.center-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 1rem;
+		z-index: 2;
+		padding: 2rem 2rem 1rem 2rem;
+		border-radius: 1rem;
+		box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+		max-width: 90vw;
 	}
-	.logo:hover {
-		filter: drop-shadow(0 0 2em #646cffaa);
+	#map {
+		flex: 1 1 auto;
+		height: 60vh;
+		width: 90vw;
+		max-width: 1200px;
+		max-height: 70vh;
+		margin: 1rem auto;
+		border-radius: 1rem;
+		overflow: hidden;
+		box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+		z-index: 1;
 	}
-	.logo.svelte:hover {
-		filter: drop-shadow(0 0 2em #ff3e00aa);
-	}
-	.read-the-docs {
+	.footer {
+		text-align: center;
+		margin-top: 0.5rem;
 		color: #888;
+		z-index: 2;
+		padding: 0.5rem 1rem;
+		border-radius: 0.5rem;
+	}
+	input {
+		margin-right: 0.5rem;
 	}
 </style>
