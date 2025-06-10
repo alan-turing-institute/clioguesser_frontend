@@ -6,6 +6,9 @@
 
   let guess = $state("");
   let guessAge = $state("");
+  let minYear = 1500;
+  let maxYear = 2024;
+  // eslint-disable-next-line no-unused-vars
   let trueAge = 1745;
 
   async function fetchGeojsonFeatures() {
@@ -84,7 +87,21 @@
     <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
   </p>
 
-  <p>Your guess: {guessAge || ""} CE</p>
+  
+  {#if guessAge != ""}
+    <p>
+      The actual age of the map is {trueAge} years.
+    </p>
+    <p>
+      {#if guessAge == trueAge}
+        <span class="correct">Correct! Very impressive</span>
+      {:else if Math.abs(guessAge - trueAge) < 50}
+        <span class="incorrect">Nearly! You were only off by {Math.abs(guessAge - trueAge)} years, good try</span>
+      {:else}
+        <span class="incorrect">Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear</span>
+      {/if}
+    </p>
+  {/if}
 
   <div id="map"></div>
   <p>
