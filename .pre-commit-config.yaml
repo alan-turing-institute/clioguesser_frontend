@@ -16,8 +16,9 @@ repos:
     rev: 'v9.28.0'
     hooks:
       - id: eslint
-        # add commandline argument
         args: ['--config', './svelte-map-app/eslint.config.js']
+        types: []
+        types_or: [javascript, svelte]
         additional_dependencies:
           - eslint@9.28.0
           - eslint-plugin-svelte@3.9.1
