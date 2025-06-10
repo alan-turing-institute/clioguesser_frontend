@@ -5,6 +5,8 @@
 
   let guess = $state("");
   let guessAge = $state("");
+  let minYear = 1500;
+  let maxYear = 2024;
   // eslint-disable-next-line no-unused-vars
   let trueAge = 1745;
 
@@ -81,6 +83,7 @@
     <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
   </p>
 
+  
   {#if guessAge != ""}
     <p>
       The actual age of the map is {trueAge} years.
