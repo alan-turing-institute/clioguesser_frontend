@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import L from "leaflet";
   import Button from "./lib/Button.svelte";
-  import { shuffledYears } from "./lib/Shuffle.svelte";
+  import { shuffledYears } from "./lib/Shuffle.js";
 
   let guess = $state("");
   let guessAge = $state("");
@@ -37,9 +37,7 @@
   let map;
 
   onMount(() => {
-    // temp
-    console.log("Shuffled years", shuffledYears);
-
+    console.log("First year", shuffledYears.shift());
 
     map = L.map("map", { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
