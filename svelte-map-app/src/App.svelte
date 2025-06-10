@@ -11,7 +11,7 @@
   let guess = $state("");
   let guessAge = $state("");
   // eslint-disable-next-line no-unused-vars
-  let trueAge = pick_year({ min_year: 500, max_year: 2024 });
+  let trueAge = pick_year({ min_year: 1500, max_year: 2024 });
 
   async function fetchGeojsonFeatures() {
     try {
