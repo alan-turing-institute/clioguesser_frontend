@@ -1,11 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import L from "leaflet";
-  import Button from "./lib/Button.svelte"
-  
-  let guess = $state('');
-  let guessAge = $state('');
-  let trueAge = 1745
+  import Button from "./lib/Button.svelte";
+
+  let guess = $state("");
+  let guessAge = $state("");
+  // eslint-disable-next-line no-unused-vars
+  let trueAge = 1745;
   let geojsonFeature = {
     type: "MultiPolygon",
     coordinates: [
@@ -26,7 +27,6 @@
       ],
     ],
   };
-  
 
   let map;
 
@@ -45,21 +45,27 @@
     L.geoJSON(geojsonFeature).addTo(map);
   });
 </script>
+
 <main>
   <h1>Clioguesser</h1>
-  <p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+  <p>
+    Do you think you know your history? Guess the age of this map based on the
+    polity outlines.
+  </p>
   <p>Age (to the nearest decade):</p>
 
   <input bind:value={guess} placeholder="enter your guess" />
-  <Button class="primary sm" on:click={() => guessAge = guess}>
-    Submit
-  </Button>
+  <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
 
-  <p>Your guess: {guessAge || ''} CE</p>
+  <p>Your guess: {guessAge || ""} CE</p>
 
   <div id="map"></div>
-  <p> Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.</p>
+  <p>
+    Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a
+    >.
+  </p>
 </main>
+
 <!-- <main>
   <div id="map"></div>
   <div>
