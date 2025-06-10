@@ -18,6 +18,13 @@ cd src/svelte-map-app
 npm run dev
 ```
 
+## Running the app in a docker container
+
+Start the docker stack containing the front end. This is currently setup to work in dev mode.
+```
+docker compose up -d
+```
+
 ## Linters and Formatters
 
 1. Install the pre-commit hooks by:
