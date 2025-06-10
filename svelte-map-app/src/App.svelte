@@ -55,8 +55,8 @@
       features.forEach((feature) => {
         L.geoJSON(feature.geometry, {
           style: {
-            color: "white",
-            weight: 2,
+            color: "black",
+            weight: 1,
             opacity: 1,
             fill: true,
             fillColor: feature.colour,
