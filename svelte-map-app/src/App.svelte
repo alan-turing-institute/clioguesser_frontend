@@ -22,7 +22,10 @@
       const jsonData = await response.json();
 
       const features = jsonData.shapes.map((shape) => {
-        return JSON.parse(shape.geom_json);
+        return {
+          geometry: JSON.parse(shape.geom_json),
+          colour: shape.colour,
+        };
       });
 
       console.log("Parsed GeoJSON features:", features);
@@ -50,11 +53,14 @@
     (async () => {
       const features = await fetchGeojsonFeatures();
       features.forEach((feature) => {
-        L.geoJSON(feature, {
+        L.geoJSON(feature.geometry, {
           style: {
-            color: "#ff7800",
-            weight: 2,
-            opacity: 0.8,
+            color: "black",
+            weight: 1,
+            opacity: 1,
+            fill: true,
+            fillColor: feature.colour,
+            fillOpacity: 1,
           },
         }).addTo(map);
       });
