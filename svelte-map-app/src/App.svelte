@@ -10,8 +10,11 @@
 
   let guess = $state("");
   let guessAge = $state("");
+  let min_year = 1500;
+  let max_year = 2024;
+  let score = null;
   // eslint-disable-next-line no-unused-vars
-  let trueAge = pick_year({ min_year: 1500, max_year: 2024 });
+  let trueAge = pick_year({ min_year: min_year, max_year: max_year });
 
   async function fetchGeojsonFeatures() {
     try {
@@ -71,6 +74,23 @@
       });
     })();
   });
+  async function getScore() {
+    const response = await fetch(
+      `http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      score = data.score;
+    } else {
+      score = "Error fetching score";
+    }
+  }
 </script>
 
 <main>
@@ -83,10 +103,20 @@
   
   <p>Age:
     <input bind:value={guess} placeholder="enter your guess" />
-    <Button class="primary sm" on:click={() => (guessAge = guess)}>Submit</Button>
+    <Button
+      class="primary sm"
+      on:click={async () => {
+        guessAge = guess;
+        await getScore();
+      }}
+      >Submit</Button
+    >
   </p>
 
-  <p>Your guess: {guessAge || ""} CE</p>
+  {#if score !== null}
+    <p>Your guess: {guessAge || ""} CE</p>
+    <p>Score: {score}</p>
+  {/if}
 
   <div id="map"></div>
   <p>
