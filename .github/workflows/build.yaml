@@ -16,7 +16,7 @@ jobs:
           node-version: "22"
       - name: Install dependencies
         run: npm ci
-        working-directory: my-app
+        working-directory: .
       - name: Check formatting
         run: npx prettier --check ..
         working-directory: my-app
