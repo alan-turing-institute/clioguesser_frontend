@@ -25,6 +25,9 @@
   export let setRound: (val: number) => void;
   export let setTrueAge: (val: number) => void;
   export let setTrueAges: (val: number[]) => void;
+  export function formatYear(year: number): string {
+		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
+	}
 </script>
 
 <p class="two-column-row">
@@ -46,12 +49,16 @@
         setInputError('');
 
         if (!submitted) {
-          if (isNaN(Number(guess)) || guess.trim() === '') {
-            setInputError('Please enter a valid number.');
-            return;
-          }
+          if (
+						isNaN(Number(guess)) ||
+						guess.trim() === '' ||
+						!Number.isInteger(Number(guess))
+					) {
+						setInputError('Please enter a valid year.');
+						return;
+					}
           if (Number(guess) < min_year || Number(guess) > max_year) {
-            setInputError(`Please enter a number between ${min_year} and ${max_year}.`);
+            setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
             return;
           }
           setGuessAge(guess);
@@ -85,12 +92,16 @@
       disabled={round > max_rounds}
       on:click={async () => {
         setInputError('');
-        if (isNaN(Number(guess)) || guess.trim() === '') {
-          setInputError('Please enter a valid number.');
+        if (
+          isNaN(Number(guess)) ||
+          guess.trim() === '' ||
+          !Number.isInteger(Number(guess))
+        ) {
+          setInputError('Please enter a valid year.');
           return;
         }
         if (Number(guess) < min_year || Number(guess) > max_year) {
-          setInputError(`Please enter a number between ${min_year} and ${max_year}.`);
+          setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
           return;
         }
         setGuessAge(guess);
