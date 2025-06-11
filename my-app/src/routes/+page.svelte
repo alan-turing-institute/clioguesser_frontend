@@ -12,7 +12,7 @@
 	let guessAge = '';
 	let min_year = -1000;
 	let max_year = 2024;
-  let year_step = 1
+	let year_step = 1;
 	let score = null;
 	let api_score = 0;
 	let trueAges: number[] = [];
@@ -291,215 +291,211 @@
 
 		await updateMap(L);
 	}
-  // Helper to format years as BCE/CE
-  function formatYear(year: number): string {
-    if (year < 0) return `${Math.abs(year)} BCE`;
-    return `${year} CE`;
-  }
+	// Helper to format years as BCE/CE
+	function formatYear(year: number): string {
+		if (year < 0) return `${Math.abs(year)} BCE`;
+		return `${year} CE`;
+	}
 </script>
 
 <div class="container">
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
-	<h1>Clioguesser</h1>
 
-	<p>Do you think you know your history? Guess the year of this map based on the polity outlines.</p>
-	<p>Round {round} of {max_rounds}</p>
-	<p>Current score: {score}</p>
-	<p>
-    Do you think you know your history? Guess the year of this map based on the polity outlines. The
-    maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.
-  </p>
+	<div class="main-layout">
+		<!-- LEFT: UI -->
+		<div class="left-panel">
+			<h1>Clioguesser</h1>
 
-	<p class="two-column-row">
-		<span class="left-align">
-			Hint modifier: {Math.round(hint_penalty)}%
-		</span>
-		<span class="right-align"> Year: </span>
-		<input
-			bind:value={guess}
-			placeholder="Enter guess (minus for BCE)"
-			disabled={round > max_rounds}
-      style="min-width: 240px;"
-			on:keydown={async (e) => {
-				// Handle Enter key for submission
-				if (round > max_rounds) return; // Disable Enter key if game is over
-
-				if (e.key === 'Enter') {
-					e.preventDefault();
-					inputError = '';
-
-					if (!submitted) {
-						if (isNaN(Number(guess)) || guess.trim() === '') {
-							inputError = 'Please enter a valid number.';
-							return;
-						}
-						if (Number(guess) < min_year || Number(guess) > max_year) {
-							inputError = `Please enter a number between ${min_year} and ${max_year}.`;
-							return;
-						}
-						guessAge = guess;
-						await getScore();
-						submitted = true;
-						hint_penalty = 100.0;
-						sessionStorage.setItem('hint_penalty', '100.0');
-					} else if (submitted && round < max_rounds) {
-						submitted = false;
-						round += 1;
-						sessionStorage.setItem('round', round.toString());
-						trueAge = trueAges.shift();
-						sessionStorage.setItem('trueAge', String(trueAge));
-						await updateMap(L);
-						guess = '';
-						guessAge = '';
-					} else if (submitted && round >= max_rounds) {
-						submitted = false;
-						round += 1;
-						sessionStorage.setItem('round', round.toString());
-					}
-				}
-			}}
-		/>
-
-		{#if submitted === false}
-			<Button
-				class="primary sm"
-				disabled={round > max_rounds}
-				on:click={async () => {
-					inputError = '';
-					if (isNaN(Number(guess)) || guess.trim() === '') {
-						inputError = 'Please enter a valid number.';
-						return;
-					}
-					if (Number(guess) < min_year || Number(guess) > max_year) {
-						inputError = `Please enter a number between ${min_year} and ${max_year}.`;
-						return;
-					}
-					guessAge = guess;
-					await getScore();
-					hint_penalty = 100.0;
-					sessionStorage.setItem('hint_penalty', '100.0');
-					submitted = true;
-				}}
-			>
-				Submit
-			</Button>
-		{:else if round < max_rounds}
-			<Button
-				class="primary sm"
-				disabled={round > max_rounds}
-				on:click={async () => {
-					submitted = false;
-					round += 1;
-					sessionStorage.setItem('round', round.toString());
-					trueAge = trueAges.shift();
-					sessionStorage.setItem('trueAge', String(trueAge));
-					await updateMap(L);
-					guess = '';
-					guessAge = '';
-				}}
-			>
-				Next
-			</Button>
-		{:else}
-			<Button
-				class="primary sm"
-				disabled={round > max_rounds}
-				on:click={async () => {
-					submitted = false;
-					round += 1;
-					sessionStorage.setItem('round', round.toString());
-				}}
-			>
-				Finish
-			</Button>
-		{/if}
-
-		<Button
-			class="secondary sm"
-			on:click={async () => {
-				await resetGame();
-			}}
-		>
-			Restart game
-		</Button>
-
-		{#if inputError}
-			<p class="text-red-500 text mt-1">
-				<span style="color: red;">{inputError}</span>
+			<p>
+				Do you think you know your history? Guess the year of this map based on the polity outlines.
 			</p>
-		{/if}
-	</p>
 
-	{#if round > max_rounds}
-		<div class="modal-backdrop">
-			<div class="modal-content">
-				<h2 class="text-xl font-bold mb-2">Game Over</h2>
-				<p>Your final score is <strong>{score}</strong> points.</p>
+			<p>Round {round} of {max_rounds}</p>
+			<p>Current score: {score}</p>
 
-				<div class="mt-4">
-					<label for="initials" class="block mb-2 font-medium">Enter your initials:</label>
-					<input
-						id="initials"
-						type="text"
-						bind:value={initials}
-						maxlength="3"
-						placeholder="ABC"
-						class="w-full px-3 py-2 border rounded-md text-black text-center uppercase font-bold"
-					/>
-					{#if initialsError}
-						<p class="text-red-500 text-sm mt-1">{initialsError}</p>
-					{/if}
-				</div>
+			<p>
+				Do you think you know your history? Guess the year of this map based on the polity outlines.
+				The maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.
+			</p>
 
-				<div class="button-row">
+			<p class="two-column-row">
+				<span class="left-align">Hint modifier: {Math.round(hint_penalty)}%</span>
+				<span class="right-align">Year:</span>
+
+				<input
+					bind:value={guess}
+					placeholder="Enter guess (minus for BCE)"
+					disabled={round > max_rounds}
+					style="min-width: 240px;"
+					on:keydown={async (e) => {
+						if (round > max_rounds) return;
+
+						if (e.key === 'Enter') {
+							e.preventDefault();
+							inputError = '';
+
+							if (!submitted) {
+								if (isNaN(Number(guess)) || guess.trim() === '') {
+									inputError = 'Please enter a valid number.';
+									return;
+								}
+								if (Number(guess) < min_year || Number(guess) > max_year) {
+									inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+									return;
+								}
+								guessAge = guess;
+								await getScore();
+								submitted = true;
+								hint_penalty = 100.0;
+								sessionStorage.setItem('hint_penalty', '100.0');
+							} else if (submitted && round < max_rounds) {
+								submitted = false;
+								round += 1;
+								sessionStorage.setItem('round', round.toString());
+								trueAge = trueAges.shift();
+								sessionStorage.setItem('trueAge', String(trueAge));
+								await updateMap(L);
+								guess = '';
+								guessAge = '';
+							} else if (submitted && round >= max_rounds) {
+								submitted = false;
+								round += 1;
+								sessionStorage.setItem('round', round.toString());
+							}
+						}
+					}}
+				/>
+
+				<!-- Button logic -->
+				{#if submitted === false}
 					<Button
 						class="primary sm"
+						disabled={round > max_rounds}
 						on:click={async () => {
-							const success = await submitLeaderboard(initials);
-							if (success) {
-								goto('/leaderboard');
+							inputError = '';
+							if (isNaN(Number(guess)) || guess.trim() === '') {
+								inputError = 'Please enter a valid number.';
+								return;
 							}
+							if (Number(guess) < min_year || Number(guess) > max_year) {
+								inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+								return;
+							}
+							guessAge = guess;
+							await getScore();
+							hint_penalty = 100.0;
+							sessionStorage.setItem('hint_penalty', '100.0');
+							submitted = true;
 						}}
 					>
-						Submit to Leaderboard
+						Submit
 					</Button>
-
+				{:else if round < max_rounds}
 					<Button
-						class="secondary sm"
+						class="primary sm"
+						disabled={round > max_rounds}
 						on:click={async () => {
-							await resetGame();
+							submitted = false;
+							round += 1;
+							sessionStorage.setItem('round', round.toString());
+							trueAge = trueAges.shift();
+							sessionStorage.setItem('trueAge', String(trueAge));
+							await updateMap(L);
+							guess = '';
+							guessAge = '';
 						}}
 					>
-						Play Again
+						Next
 					</Button>
-				</div>
-			</div>
-		</div>
-	{/if}
+				{:else}
+					<Button
+						class="primary sm"
+						disabled={round > max_rounds}
+						on:click={async () => {
+							submitted = false;
+							round += 1;
+							sessionStorage.setItem('round', round.toString());
+						}}
+					>
+						Finish
+					</Button>
+				{/if}
 
-	{#if submitted === true}
-		<p>
-			The actual age of the map is {trueAge} CE.
-		</p>
-		<p>
-			{#if guessAge == trueAge}
-				<span class="correct">Correct! Very impressive</span>
-			{:else if Math.abs(guessAge - trueAge) < 50}
-				<span class="incorrect"
-					>Nearly! You were only off by {Math.abs(guessAge - trueAge)} years, good try</span
-				>
-			{:else}
-				<span class="incorrect"
-					>Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear</span
-				>
+				<Button class="secondary sm" on:click={async () => await resetGame()}>Restart game</Button>
+			</p>
+
+			{#if inputError}
+				<p class="text-red-500 text mt-1">
+					<span style="color: red;">{inputError}</span>
+				</p>
 			{/if}
-		</p>
-		<!-- <p>Score: {score}</p> -->
-	{/if}
 
-	<div id="map"></div>
+			{#if round > max_rounds}
+				<div class="modal-backdrop">
+					<div class="modal-content">
+						<h2 class="text-xl font-bold mb-2">Game Over</h2>
+						<p>Your final score is <strong>{score}</strong> points.</p>
+
+						<div class="mt-4">
+							<label for="initials" class="block mb-2 font-medium">Enter your initials:</label>
+							<input
+								id="initials"
+								type="text"
+								bind:value={initials}
+								maxlength="3"
+								placeholder="ABC"
+								class="w-full px-3 py-2 border rounded-md text-black text-center uppercase font-bold"
+							/>
+							{#if initialsError}
+								<p class="text-red-500 text-sm mt-1">{initialsError}</p>
+							{/if}
+						</div>
+
+						<div class="button-row">
+							<Button
+								class="primary sm"
+								on:click={async () => {
+									const success = await submitLeaderboard(initials);
+									if (success) goto('/leaderboard');
+								}}
+							>
+								Submit to Leaderboard
+							</Button>
+
+							<Button class="secondary sm" on:click={async () => await resetGame()}>
+								Play Again
+							</Button>
+						</div>
+					</div>
+				</div>
+			{/if}
+
+			{#if submitted === true}
+				<p>The actual age of the map is {trueAge} CE.</p>
+				<p>
+					{#if guessAge == trueAge}
+						<span class="correct">Correct! Very impressive</span>
+					{:else if Math.abs(guessAge - trueAge) < 50}
+						<span class="incorrect">
+							Nearly! You were only off by {Math.abs(guessAge - trueAge)} years, good try
+						</span>
+					{:else}
+						<span class="incorrect">
+							Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear
+						</span>
+					{/if}
+				</p>
+			{/if}
+		</div>
+
+		<!-- RIGHT: Map -->
+		<div class="right-panel">
+			<div id="map"></div>
+		</div>
+	</div>
+
 	<p>
 		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
 	</p>
@@ -548,5 +544,36 @@
 	.right-align {
 		flex: 4;
 		text-align: right;
+	}
+	.main-layout {
+		display: flex;
+		flex-direction: row;
+		height: 100vh;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.left-panel {
+		flex: 1;
+		padding: 2rem;
+		overflow-y: auto;
+		background-color: #1f2937; /* optional dark background */
+		color: white;
+		box-sizing: border-box;
+	}
+
+	.right-panel {
+		flex: 2.5;
+		position: relative;
+	}
+
+	#map {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 </style>
