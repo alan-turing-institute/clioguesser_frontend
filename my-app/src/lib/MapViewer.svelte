@@ -101,10 +101,3 @@
 </script>
 
 <div id="map" class="map-container"></div>
-
-<style>
-	.map-container {
-		height: 100vh;
-		width: 100%;
-	}
-</style>
