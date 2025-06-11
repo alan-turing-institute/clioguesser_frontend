@@ -125,7 +125,14 @@
 		submitLeaderboard={handleSubmitLeaderboard}
 		{resetGame}
 	/>
-	<MapViewer {trueAge} {hint_penalty} on:hintPenaltyUpdate={(e) => (hint_penalty = e.detail)} />
+	<MapViewer
+		{trueAge}
+		{hint_penalty}
+		on:hintPenaltyUpdate={(e) => {
+			hint_penalty = e.detail;
+			sessionStorage.setItem('hint_penalty', String(hint_penalty));
+		}}
+	/>
 
 	<p>Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.</p>
 </div>
