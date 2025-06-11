@@ -10,7 +10,7 @@
 
 	let guess = '';
 	let guessAge = '';
-	let min_year = -3400;
+	let min_year = -1000;
 	let max_year = 2024;
   let year_step = 1
 	let score = null;
