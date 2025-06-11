@@ -32,7 +32,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
-	import { shuffledYears } from '$lib/Shuffle.js';
+	import { shuffle_years } from '$lib/shuffle.js';
 
 	async function pick_year({ min_year, max_year }) {
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
@@ -128,9 +128,9 @@
 
 	onMount(async () => {
 		// TODO: Update so we use this instead of a random year
-		console.log('First year', shuffledYears.shift());
 		const L = await import('leaflet');
-		trueAge = await pick_year({ min_year, max_year });
+		let trueAges = shuffle_years(min_year, max_year);
+		trueAge = trueAges.shift();
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
 		L.tileLayer(
