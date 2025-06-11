@@ -13,6 +13,7 @@
 	let max_year = 2024;
 	let score = null;
 	let trueAge = null;
+	let hint_penalty: number = 100.0; // The penalty for using a hint, in years
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -92,6 +93,7 @@
 							className: 'custom-tooltip' // Optional: for custom styling
 						})
 						.openTooltip(event.latlng);
+						hint_penalty *= 0.9; // Reduce the hint penalty by 10% on each click
 				});
 
 				layer.on('mouseout', () => {
@@ -114,6 +116,7 @@
 		const L = await import('leaflet');
 		let trueAges = shuffle_years(min_year, max_year);
 		trueAge = trueAges.shift();
+
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
 		L.tileLayer(
@@ -128,8 +131,9 @@
 	});
 
 	async function getScore() {
+		let multiplier = 365 * (hint_penalty / 100.0);
 		const response = await fetch(
-			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}&multiplier=${multiplier}`,
 			{
 				headers: {
 					'Content-Type': 'application/json'
@@ -152,19 +156,26 @@
 	</a>
 	<h1>Clioguesser</h1>
 
-	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+	<div>
+		<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
 
-	<p>
-		Age:
-		<input bind:value={guess} placeholder="enter your guess" />
-		<Button
-			class="primary sm"
-			on:click={async () => {
-				guessAge = guess;
-				await getScore();
-			}}>Submit</Button
-		>
-	</p>
+		<p class="two-column-row">
+			<span class="left-align">
+				Hint Penalty: {Math.round(hint_penalty)}%
+			</span>
+			<span class="right-align">
+				Age:
+				<input bind:value={guess} placeholder="enter your guess" />
+				<Button
+					class="primary sm"
+					on:click={async () => {
+						guessAge = guess;
+						await getScore();
+					}}>Submit</Button
+				>
+			</span>
+		</p>
+	</div>	
 
 	{#if score !== null}
 		<p>
@@ -221,5 +232,19 @@
 	}
 	.leaderboard-link:hover {
 		transform: scale(1.08) rotate(-2deg);
+	}
+	.two-column-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 2rem;
+		width: 100%;
+	}
+	.left-align {
+		flex: 2;
+		text-align: left;
+	}
+	.right-align {
+		flex: 4;
+		text-align: right;
 	}
 </style>
