@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
-	import { shuffle_years } from '$lib/shuffle.js';
+	import { shuffle_years } from '$lib/Shuffle.js';
+	import { goto } from '$app/navigation';
 
 	async function pick_year({ min_year, max_year }) {
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
@@ -14,10 +15,11 @@
 	let score = 0;
 	let api_score = 0;
 	let trueAges: number[] = [];
+	let trueAge: number | null = null;
 	let round = 1;
 	let max_rounds = 1;
 	let submitted = false;
-	let initials = null;
+	let initials = '';
 	let initialsError = '';
 	let inputError = '';
 
@@ -103,10 +105,11 @@
 	}
 
 	onMount(async () => {
-		// TODO: Update so we use this instead of a random year
 		const L = await import('leaflet');
-		let trueAges = shuffle_years(min_year, max_year);
-		trueAge = trueAges.shift();
+
+		trueAges = shuffle_years(min_year, max_year); // ✅ overwrite global, not local
+		trueAge = trueAges.shift(); // ✅ set the first round's target
+
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
 		L.tileLayer(
@@ -117,7 +120,9 @@
 				attribution: '© ArcGIS, Powered by Esri'
 			}
 		).addTo(map);
+
 		await updateMap();
+
 		const stored = Number(sessionStorage.getItem('score'));
 		score = isNaN(stored) ? 0 : stored;
 	});
@@ -155,32 +160,39 @@
 		}
 	}
 
-	async function submitLeaderboard(initials: string) {
+	async function submitLeaderboard(initials: string): Promise<boolean> {
 		if (initials.length !== 3) {
 			initialsError = 'Initials must be exactly 3 characters.';
-			return;
+			return false;
 		}
-		initialsError = ''; // clear previous error
+
+		initialsError = '';
 
 		try {
-			const response = await fetch(
-				`http://localhost:8000/api/leaderboard/?initials=${initials}&score=${score}`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
-					}
-				}
-			);
+			const response = await fetch('http://localhost:8000/api/leaderboard/update/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams({
+					initials,
+					score: score.toString()
+				})
+			});
 
 			if (response.ok) {
 				const data = await response.json();
 				console.log('Leaderboard submission successful:', data);
+				return true;
 			} else {
 				console.error('Failed to submit to leaderboard:', response.statusText);
+				initialsError = 'Failed to submit score. Please try again.';
+				return false;
 			}
 		} catch (error) {
 			console.error('Error occurred while submitting to leaderboard:', error);
+			initialsError = 'An error occurred. Please try again.';
+			return false;
 		}
 	}
 	async function resetGame() {
@@ -190,8 +202,11 @@
 		guessAge = '';
 		round = 1;
 		submitted = false;
-		trueAge = await pick_year({ min_year, max_year });
-		updateMap();
+
+		trueAges = shuffle_years(min_year, max_year);
+		trueAge = trueAges.shift();
+
+		await updateMap();
 	}
 </script>
 
@@ -236,11 +251,12 @@
 				on:click={async () => {
 					submitted = false;
 					round += 1;
-					trueAge = await pick_year({ min_year, max_year });
+					trueAge = trueAges.shift(); // ✅ next shuffled year
 					await updateMap();
 					guess = '';
 					guessAge = '';
-				}}>next</Button
+				}}>Next</Button
+			>
 			>
 		{:else}
 			<Button
@@ -284,7 +300,15 @@
 				</div>
 
 				<div class="button-row">
-					<Button class="primary sm" on:click={() => submitLeaderboard(initials)}>
+					<Button
+						class="primary sm"
+						on:click={async () => {
+							const success = await submitLeaderboard(initials);
+							if (success) {
+								goto('/leaderboard');
+							}
+						}}
+					>
 						Submit to Leaderboard
 					</Button>
 
