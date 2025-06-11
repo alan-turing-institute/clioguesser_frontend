@@ -1,97 +1,110 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { fetchGeojsonFeatures } from '$lib/api'; // move fetch out here
+	import { onMount } from 'svelte';
+	import { fetchGeojsonFeatures } from '$lib/api';
 
-  export let trueAge: number;
-  export let hint_penalty: number;
-  export let onHintUsed: (penalty: number) => void;
+	export let trueAge: number;
+	export let hint_penalty: number;
+	export let onHintUsed: (penalty: number) => void;
 
-  let map;
-  let L: any;
+	let map;
+	let L: any;
+	let layers: any[] = [];
 
-  onMount(async () => {
-    L = await import('leaflet');
-    map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
+	onMount(async () => {
+		L = await import('leaflet');
 
-    map.createPane('borders');
-    map.getPane('borders').style.zIndex = '650';
+		map = L.map('map', {
+			crs: L.CRS.EPSG3857
+		}).setView([0, 0], 2);
 
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 10, minZoom: 1 }
-    ).addTo(map);
+		map.createPane('borders');
+		map.getPane('borders').style.zIndex = '650';
 
-    await renderMap();
-  });
+		L.tileLayer(
+			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+			{ maxZoom: 10, minZoom: 1 }
+		).addTo(map);
 
-  async function renderMap() {
-    const features = await fetchGeojsonFeatures(trueAge);
+		await renderMap(); // initial load
+	});
 
-    const groups = {};
-    features.forEach((feature) => {
-      const layer = L.geoJSON(feature.geometry, {
-        style: {
-          color: 'black',
-          weight: 1,
-          opacity: 1,
-          fill: true,
-          fillColor: feature.colour,
-          fillOpacity: 1
-        }
-      });
+	$: trueAge, renderMap(); // re-run when trueAge changes
 
-      const groupId = feature.shape_name;
-      if (!groups[groupId]) {
-        let layerGroup = L.layerGroup();
-        layerGroup.the_name = groupId;
-        groups[groupId] = layerGroup;
-      }
+	async function renderMap() {
+		if (!map || !L || !trueAge) return;
 
-      groups[groupId].addLayer(layer);
-    });
+		// Clear old layers
+		layers.forEach((layer) => map.removeLayer(layer));
+		layers = [];
 
-    Object.values(groups).forEach((group) => {
-      group.eachLayer((layer) => {
-        layer.options.pane = 'borders';
+		const features = await fetchGeojsonFeatures(trueAge);
+		const groups = {};
 
-        layer.on('mouseover', () => {
-          group.eachLayer((l) =>
-            l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 })
-          );
-        });
+		for (const feature of features) {
+			const geoLayer = L.geoJSON(feature.geometry, {
+				style: {
+					color: 'black',
+					weight: 1,
+					opacity: 1,
+					fill: true,
+					fillColor: feature.colour,
+					fillOpacity: 1
+				}
+			});
 
-        layer.on('mouseup', (event) => {
-          if (!layer._tooltip) {
-            layer
-              .bindTooltip(group.the_name, {
-                permanent: false,
-                direction: 'top',
-                className: 'custom-tooltip'
-              })
-              .openTooltip(event.latlng);
+			const groupId = feature.shape_name;
+			if (!groups[groupId]) {
+				let groupLayer = L.layerGroup();
+				groupLayer.the_name = groupId;
+				groups[groupId] = groupLayer;
+			}
 
-            const newPenalty = hint_penalty * 0.9;
-            onHintUsed(newPenalty);
-          }
-        });
+			groups[groupId].addLayer(geoLayer);
+		}
 
-        layer.on('mouseout', () => {
-          group.eachLayer((l) =>
-            l.setStyle({ weight: 1, color: 'black', fillOpacity: 1 })
-          );
-        });
-      });
+		Object.values(groups).forEach((group) => {
+			group.eachLayer((layer) => {
+				layer.options.pane = 'borders';
 
-      group.addTo(map);
-    });
-  }
+				layer.on('mouseover', () => {
+					group.eachLayer((l) =>
+						l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 })
+					);
+				});
+
+				layer.on('mouseup', (event) => {
+					if (!layer._tooltip) {
+						layer
+							.bindTooltip(group.the_name, {
+								permanent: false,
+								direction: 'top',
+								className: 'custom-tooltip'
+							})
+							.openTooltip(event.latlng);
+
+						const newPenalty = hint_penalty * 0.9;
+						onHintUsed?.(newPenalty);
+					}
+				});
+
+				layer.on('mouseout', () => {
+					group.eachLayer((l) =>
+						l.setStyle({ weight: 1, color: 'black', fillOpacity: 1 })
+					);
+				});
+			});
+
+			group.addTo(map);
+			layers.push(group);
+		});
+	}
 </script>
 
 <div id="map" class="map-container"></div>
 
-<!-- <style>
-  .map-container {
-    height: 100vh;
-    width: 100%;
-  }
-</style> -->
+<style>
+	.map-container {
+		height: 100vh;
+		width: 100%;
+	}
+</style>
