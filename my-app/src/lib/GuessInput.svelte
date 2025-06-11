@@ -49,7 +49,11 @@
 				setInputError('');
 
 				if (!submitted) {
-					if (isNaN(Number(guess)) || guess.trim() === '') {
+					if (
+						isNaN(Number(guess)) ||
+						guess.trim() === '' ||
+						!Number.isInteger(Number(guess))
+					) {
 						setInputError('Please enter a valid year.');
 						return;
 					}
@@ -88,7 +92,11 @@
 			disabled={round > max_rounds}
 			on:click={async () => {
 				setInputError('');
-				if (isNaN(Number(guess)) || guess.trim() === '') {
+				if (
+					isNaN(Number(guess)) ||
+					guess.trim() === '' ||
+					!Number.isInteger(Number(guess))
+				) {
 					setInputError('Please enter a valid year.');
 					return;
 				}
