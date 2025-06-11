@@ -21,10 +21,6 @@
 
 <main>
   <h1>Leaderboard</h1>
-  
-  <h2>
-    Top scorers:
-  </h2>
 
   {#if loading}
     <p>Loading...</p>
@@ -34,7 +30,6 @@
     <table>
       <thead>
         <tr>
-          <th>Rank</th>
           <th>Name</th>
           <th>Score</th>
         </tr>
@@ -42,7 +37,6 @@
       <tbody>
         {#each leaderboard.slice().sort((a, b) => b.score - a.score) as player, i}
           <tr>
-            <td>{i + 1}</td>
             <td>{player.initials}</td>
             <td>{player.score}</td>
           </tr>
