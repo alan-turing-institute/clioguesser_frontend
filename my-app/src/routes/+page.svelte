@@ -1,34 +1,3 @@
-<style>
-  .leaderboard-link {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100px;
-    height: 100px;
-    pointer-events: auto;
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    transition: transform 0.15s;
-  }
-  .leaderboard-link span {
-    font-size: 80px;
-    width: 100px;
-    height: 100px;
-    display: block;
-    line-height: 1;
-    user-select: none;
-    pointer-events: none;
-  }
-  .leaderboard-link:hover {
-    transform: scale(1.08) rotate(-2deg);
-  }
-</style>
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
@@ -57,7 +26,7 @@
 			const jsonData = await response.json();
 
 			const features = jsonData.shapes.map((shape) => {
-        console.log('Shape name:', shape.name);
+				console.log('Shape name:', shape.name);
 				return {
 					geometry: JSON.parse(shape.geom_json),
 					colour: shape.colour,
@@ -116,11 +85,13 @@
 
 				layer.on('mouseup', (event) => {
 					// On a mouse up event, add a popup with the shape name
-					layer.bindTooltip(group.the_name, { 
-						permanent: false, 
-						direction: 'top', 
-						className: 'custom-tooltip' // Optional: for custom styling
-					}).openTooltip(event.latlng);
+					layer
+						.bindTooltip(group.the_name, {
+							permanent: false,
+							direction: 'top',
+							className: 'custom-tooltip' // Optional: for custom styling
+						})
+						.openTooltip(event.latlng);
 				});
 
 				layer.on('mouseout', () => {
@@ -176,9 +147,9 @@
 </script>
 
 <div class="container">
-  <a class="leaderboard-link" href="/leaderboard">
-    <span role="img" aria-label="Leaderboard">🏅</span>
-  </a>
+	<a class="leaderboard-link" href="/leaderboard">
+		<span role="img" aria-label="Leaderboard">🏅</span>
+	</a>
 	<h1>Clioguesser</h1>
 
 	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
@@ -220,3 +191,35 @@
 		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
 	</p>
 </div>
+
+<style>
+	.leaderboard-link {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		width: 100px;
+		height: 100px;
+		pointer-events: auto;
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		transition: transform 0.15s;
+	}
+	.leaderboard-link span {
+		font-size: 80px;
+		width: 100px;
+		height: 100px;
+		display: block;
+		line-height: 1;
+		user-select: none;
+		pointer-events: none;
+	}
+	.leaderboard-link:hover {
+		transform: scale(1.08) rotate(-2deg);
+	}
+</style>
