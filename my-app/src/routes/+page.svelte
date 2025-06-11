@@ -278,7 +278,10 @@
 		<input
 			bind:value={guess}
 			placeholder="enter your guess"
+			disabled={round > max_rounds}
 			on:keydown={async (e) => {
+				if (round > max_rounds) return; // 🔒 Disable Enter key if game is over
+
 				if (e.key === 'Enter') {
 					e.preventDefault();
 					inputError = '';
@@ -312,9 +315,11 @@
 				}
 			}}
 		/>
+
 		{#if submitted === false}
 			<Button
 				class="primary sm"
+				disabled={round > max_rounds}
 				on:click={async () => {
 					inputError = '';
 					if (isNaN(Number(guess)) || guess.trim() === '') {
@@ -328,11 +333,14 @@
 					guessAge = guess;
 					await getScore();
 					submitted = true;
-				}}>Submit</Button
+				}}
 			>
+				Submit
+			</Button>
 		{:else if round < max_rounds}
 			<Button
 				class="primary sm"
+				disabled={round > max_rounds}
 				on:click={async () => {
 					submitted = false;
 					round += 1;
@@ -349,19 +357,26 @@
 		{:else}
 			<Button
 				class="primary sm"
+				disabled={round > max_rounds}
 				on:click={async () => {
 					submitted = false;
 					round += 1;
 					sessionStorage.setItem('round', round.toString());
-				}}>Finish</Button
+				}}
 			>
+				Finish
+			</Button>
 		{/if}
+
 		<Button
 			class="secondary sm"
 			on:click={async () => {
 				await resetGame();
-			}}>Restart game</Button
+			}}
 		>
+			Restart game
+		</Button>
+
 		{#if inputError}
 			<p class="text-red-500 text mt-1">
 				<span style="color: red;">{inputError}</span>
