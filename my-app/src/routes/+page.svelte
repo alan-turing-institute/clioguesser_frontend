@@ -258,6 +258,11 @@
 
 		await updateMap();
 	}
+  // Helper to format years as BCE/CE
+  function formatYear(year: number): string {
+    if (year < 0) return `${Math.abs(year)} BCE`;
+    return `${year} CE`;
+  }
 </script>
 
 <div class="container">
@@ -266,20 +271,21 @@
 	</a>
 	<h1>Clioguesser</h1>
 
-	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+	<p>Do you think you know your history? Guess the year of this map based on the polity outlines.</p>
 	<p>Round {round} of {max_rounds}</p>
 	<p>Current score: {score}</p>
 	<p>
-		Do you think you know your history? Guess the age of this map based on the polity outlines. The
-		maps cover the years {min_year} CE to {max_year} CE.
-	</p>
+    Do you think you know your history? Guess the year of this map based on the polity outlines. The
+    maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.
+  </p>
 
 	<p>
-		Age:
+		Year:
 		<input
 			bind:value={guess}
-			placeholder="enter your guess"
+			placeholder="Enter guess (minus for BCE)"
 			disabled={round > max_rounds}
+      style="min-width: 240px;"
 			on:keydown={async (e) => {
 				// Handle Enter key for submission
 				if (round > max_rounds) return; // Disable Enter key if game is over
