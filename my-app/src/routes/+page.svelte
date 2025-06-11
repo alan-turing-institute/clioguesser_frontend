@@ -1,3 +1,34 @@
+<style>
+  .leaderboard-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100px;
+    height: 100px;
+    pointer-events: auto;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.15s;
+  }
+  .leaderboard-link span {
+    font-size: 80px;
+    width: 100px;
+    height: 100px;
+    display: block;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+  .leaderboard-link:hover {
+    transform: scale(1.08) rotate(-2deg);
+  }
+</style>
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
@@ -132,6 +163,9 @@
 </script>
 
 <div class="container">
+  <a class="leaderboard-link" href="/leaderboard">
+    <span role="img" aria-label="Leaderboard">🏅</span>
+  </a>
 	<h1>Clioguesser</h1>
 
 	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
