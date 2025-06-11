@@ -7,6 +7,7 @@
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
 	}
 
+
 	let guess = '';
 	let guessAge = '';
 	let min_year = 1500;
@@ -113,6 +114,7 @@
 		await updateMap();
 	});
 	async function getScore() {
+	try {
 		const response = await fetch(
 			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
 			{
@@ -122,13 +124,30 @@
 				credentials: 'include'
 			}
 		);
+
 		if (response.ok) {
 			const data = await response.json();
 			score = data.score;
+
+			const sessionScore = sessionStorage.getItem('score');
+			if (sessionScore === null) {
+				sessionStorage.setItem('score', score.toString());
+			} else {
+				const newScore = parseInt(sessionScore, 10) + score;
+				sessionStorage.setItem('score', newScore.toString());
+			}
+
+			console.log('Score updated:', score);
+			console.log('Session score:', sessionStorage.getItem('score'));
 		} else {
 			score = 'Error fetching score';
+			console.error('Failed to fetch score:', response.statusText);
 		}
+	} catch (error) {
+		score = 'Error fetching score';
+		console.error('Error occurred while fetching score:', error);
 	}
+}
 </script>
 
 <div class="container">
