@@ -24,7 +24,7 @@
 <p>The maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.</p>
 
 {#if submitted && trueAge !== null}
-	<p>The actual age of the map is {formatYear(trueAge)}.</p>
+	<p>The actual year of the map is {formatYear(trueAge)}.</p>
 	<p>
 		{#if guessAge == String(trueAge)}
 			<span class="correct">Correct! Very impressive</span>
