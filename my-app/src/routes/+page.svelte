@@ -10,8 +10,9 @@
 
 	let guess = '';
 	let guessAge = '';
-	let min_year = 1500;
+	let min_year = -1000;
 	let max_year = 2024;
+  let year_step = 1
 	let score = null;
 	let api_score = 0;
 	let trueAges: number[] = [];
@@ -158,14 +159,14 @@
 		if (storedTrueAgeStr !== null) {
 			trueAge = Number(storedTrueAgeStr);
 		} else {
-			trueAges = shuffle_years(min_year, max_year);
+			trueAges = shuffle_years(min_year, max_year, year_step);
 			trueAge = trueAges.shift();
 			sessionStorage.setItem('trueAge', String(trueAge));
 		}
 
 		// Populate trueAges
 		if (!trueAges || trueAges.length === 0) {
-			trueAges = shuffle_years(min_year, max_year).filter((year) => year !== trueAge);
+			trueAges = shuffle_years(min_year, max_year, year_step).filter((year) => year !== trueAge);
 		}
 
 		// Round logic — default to 1 if not set
@@ -277,7 +278,7 @@
 		sessionStorage.setItem('hint_penalty', '100.0');
 		hint_penalty = 100.0;
 
-		trueAges = shuffle_years(min_year, max_year);
+		trueAges = shuffle_years(min_year, max_year, year_step);
 		trueAge = trueAges.shift();
 		sessionStorage.setItem('trueAge', trueAge!.toString());
 
@@ -290,6 +291,11 @@
 
 		await updateMap(L);
 	}
+  // Helper to format years as BCE/CE
+  function formatYear(year: number): string {
+    if (year < 0) return `${Math.abs(year)} BCE`;
+    return `${year} CE`;
+  }
 </script>
 
 <div class="container">
@@ -298,23 +304,24 @@
 	</a>
 	<h1>Clioguesser</h1>
 
-	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+	<p>Do you think you know your history? Guess the year of this map based on the polity outlines.</p>
 	<p>Round {round} of {max_rounds}</p>
 	<p>Current score: {score}</p>
 	<p>
-		Do you think you know your history? Guess the age of this map based on the polity outlines. The
-		maps cover the years {min_year} CE to {max_year} CE.
-	</p>
+    Do you think you know your history? Guess the year of this map based on the polity outlines. The
+    maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.
+  </p>
 
 	<p class="two-column-row">
 		<span class="left-align">
-			Hint Penalty: {Math.round(hint_penalty)}%
+			Hint modifier: {Math.round(hint_penalty)}%
 		</span>
-		<span class="right-align"> Age: </span>
+		<span class="right-align"> Year: </span>
 		<input
 			bind:value={guess}
-			placeholder="enter your guess"
+			placeholder="Enter guess (minus for BCE)"
 			disabled={round > max_rounds}
+      style="min-width: 240px;"
 			on:keydown={async (e) => {
 				// Handle Enter key for submission
 				if (round > max_rounds) return; // Disable Enter key if game is over
