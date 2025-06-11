@@ -10,8 +10,9 @@
 
 	let guess = '';
 	let guessAge = '';
-	let min_year = 1500;
+	let min_year = -3400;
 	let max_year = 2024;
+  let year_step = 1
 	let score = null;
 	let api_score = 0;
 	let trueAges: number[] = [];
@@ -128,14 +129,14 @@
 		if (storedTrueAgeStr !== null) {
 			trueAge = Number(storedTrueAgeStr);
 		} else {
-			trueAges = shuffle_years(min_year, max_year);
+			trueAges = shuffle_years(min_year, max_year, year_step);
 			trueAge = trueAges.shift();
 			sessionStorage.setItem('trueAge', String(trueAge));
 		}
 
 		// Populate trueAges
 		if (!trueAges || trueAges.length === 0) {
-			trueAges = shuffle_years(min_year, max_year).filter((year) => year !== trueAge);
+			trueAges = shuffle_years(min_year, max_year, year_step).filter((year) => year !== trueAge);
 		}
 
 		// Round logic — default to 1 if not set
@@ -244,7 +245,7 @@
 		sessionStorage.setItem('score', '0');
 		sessionStorage.setItem('round', '1');
 
-		trueAges = shuffle_years(min_year, max_year);
+		trueAges = shuffle_years(min_year, max_year, year_step);
 		trueAge = trueAges.shift();
 		sessionStorage.setItem('trueAge', trueAge!.toString());
 
