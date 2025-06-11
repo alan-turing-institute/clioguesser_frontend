@@ -28,13 +28,24 @@
 	export function formatYear(year: number): string {
 		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
 	}
+	let popHint = false;
+
+    $: if (hint_penalty !== undefined) {
+        popHint = false;
+        setTimeout(() => {
+            popHint = true;
+            setTimeout(() => popHint = false, 500); // duration matches animation
+        }, 0);
+    }
 </script>
 
 <div class="two-column-row">
 	<span class="left-align">
-		Hint modifier: {Math.round(hint_penalty)}%
-	</span>
-	<span class="right-align">Year:</span>
+        <span class:pop-effect={popHint}>
+            Hint modifier: {Math.round(hint_penalty)}%
+        </span>
+    </span>
+    <span class="right-align">Year:</span>
 
 	<input
 		bind:value={guess}
@@ -177,4 +188,28 @@
 		flex: 4;
 		text-align: right;
 	}
+	.pop-effect {
+        animation: pop 0.5s cubic-bezier(.36,2,.6,.99);
+        color: #e63946;
+        font-weight: bold;
+        text-shadow: 0 0 8px #fff, 0 0 16px #e63946;
+    }
+    @keyframes pop {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        20% {
+            transform: scale(1.5);
+            opacity: 1;
+        }
+        60% {
+            transform: scale(0.95);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
 </style>
