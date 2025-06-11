@@ -107,22 +107,42 @@
 	onMount(async () => {
 		const L = await import('leaflet');
 
-		const storedTrueAge = Number(sessionStorage.getItem('trueAge'));
-		const storedScore = Number(sessionStorage.getItem('score'));
-		const storedRound = Number(sessionStorage.getItem('round'));
+		// Retrieve values directly from session storage
+		const storedTrueAgeStr = sessionStorage.getItem('trueAge');
+		const storedRoundStr = sessionStorage.getItem('round');
+		const storedScoreStr = sessionStorage.getItem('score');
 
-		// Only set up the first trueAge if there isn't one already
-		if (!isNaN(storedTrueAge)) {
-			trueAge = storedTrueAge;
+		// Only generate new trueAge if it's not in storage
+		if (storedTrueAgeStr !== null) {
+			trueAge = Number(storedTrueAgeStr);
 		} else {
 			trueAges = shuffle_years(min_year, max_year);
 			trueAge = trueAges.shift();
-			sessionStorage.setItem('trueAge', trueAge!.toString());
+			sessionStorage.setItem('trueAge', String(trueAge));
 		}
 
-		round = isNaN(storedRound) ? 1 : storedRound;
-		score = isNaN(storedScore) ? 0 : storedScore;
+		// Populate trueAges
+		if (!trueAges || trueAges.length === 0) {
+			trueAges = shuffle_years(min_year, max_year).filter((year) => year !== trueAge);
+		}
 
+		// Round logic — default to 1 if not set
+		if (storedRoundStr !== null) {
+			round = Number(storedRoundStr);
+		} else {
+			round = 1;
+			sessionStorage.setItem('round', '1');
+		}
+
+		// Score logic — default to 0 if not set
+		if (storedScoreStr !== null) {
+			score = Number(storedScoreStr);
+		} else {
+			score = 0;
+			sessionStorage.setItem('score', '0');
+		}
+
+		// Map setup
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
 		L.tileLayer(
