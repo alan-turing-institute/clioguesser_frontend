@@ -75,11 +75,12 @@
 
 	let map;
 
-	async function updateMap() {
+	async function updateMap(l) {
+		// l is L (leaflet)
 		const features = await fetchGeojsonFeatures();
 		const groups = {}; // group_id -> LayerGroup
 		features.forEach((feature) => {
-			const layer = L.geoJSON(feature.geometry, {
+			const layer = l.geoJSON(feature.geometry, {
 				style: {
 					color: 'black',
 					weight: 1,
@@ -92,7 +93,9 @@
 
 			const groupId = feature.shape_name; // Assuming shape_id is the group identifier
 			if (!groups[groupId]) {
-				groups[groupId] = L.layerGroup();
+				let layer_group = l.layerGroup();
+				layer_group.the_name = feature.shape_name;
+				groups[groupId] = layer_group;
 			}
 
 			groups[groupId].addLayer(layer);
@@ -109,6 +112,15 @@
 							fillOpacity: 0.7
 						});
 					});
+				});
+
+				layer.on('mouseup', (event) => {
+					// On a mouse up event, add a popup with the shape name
+					layer.bindTooltip(group.the_name, { 
+						permanent: false, 
+						direction: 'top', 
+						className: 'custom-tooltip' // Optional: for custom styling
+					}).openTooltip(event.latlng);
 				});
 
 				layer.on('mouseout', () => {
@@ -141,8 +153,9 @@
 				attribution: '© ArcGIS, Powered by Esri'
 			}
 		).addTo(map);
-		await updateMap();
+		await updateMap(L);
 	});
+
 	async function getScore() {
 		const response = await fetch(
 			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
