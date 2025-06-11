@@ -20,6 +20,32 @@
 </script>
 
 <style>
+  .map-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: auto;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.15s;
+  }
+  .map-link span {
+    font-size: 100px;
+    display: block;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+  .map-link:hover {
+    transform: scale(1.03) rotate(-2deg);
+  }
+
   main {
     display: flex;
     flex-direction: column;
@@ -32,6 +58,7 @@
     width: 100vw;
     min-width: 100vw;
     box-sizing: border-box;
+    position: relative;
   }
 
   h1 {
@@ -125,6 +152,10 @@
   }
 
   @media (max-width: 900px) {
+    .map-link {
+      top: 0.7rem;
+      left: 0.7rem;
+    }
     table {
       min-width: 340px;
       width: 98vw;
@@ -142,6 +173,10 @@
     }
   }
 </style>
+
+<a class="map-link" href="/">
+  <span role="img" aria-label="Map">🗺️</span>
+</a>
 
 <main>
   <h1>🏆 Top scorers 🕹️</h1>
@@ -176,6 +211,5 @@
 </main>
 
 <!--
-Tip: For the best arcade look, add the "Press Start 2P" or "VT323" font from Google Fonts in your main HTML!
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+Tip: Place a map image at /static/map_icon.png or update the src above to your preferred image!
 -->
