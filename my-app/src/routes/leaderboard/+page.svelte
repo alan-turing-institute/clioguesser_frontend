@@ -9,7 +9,8 @@
     try {
       const res = await fetch('http://localhost:8000/api/leaderboard/');
       if (!res.ok) throw new Error('Failed to fetch leaderboard');
-      leaderboard = await res.json();
+      const data = await res.json();
+      leaderboard = Array.isArray(data.leaderboard) ? [...data.leaderboard] : [];
     } catch (e) {
       error = e.message;
     } finally {
@@ -39,10 +40,10 @@
         </tr>
       </thead>
       <tbody>
-        {#each leaderboard as player, i}
+        {#each leaderboard.slice().sort((a, b) => b.score - a.score) as player, i}
           <tr>
             <td>{i + 1}</td>
-            <td>{player.name}</td>
+            <td>{player.initials}</td>
             <td>{player.score}</td>
           </tr>
         {/each}
