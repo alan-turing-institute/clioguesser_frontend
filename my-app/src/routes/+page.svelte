@@ -12,11 +12,11 @@
 	let guessAge = '';
 	let min_year = 1500;
 	let max_year = 2024;
-	let score = 0;
+	let score = null;
 	let api_score = 0;
 	let trueAges: number[] = [];
 	let trueAge: number | null = null;
-	let round = 1;
+	let round = null;
 	let max_rounds = 10;
 	let submitted = false;
 	let initials = '';
@@ -107,8 +107,21 @@
 	onMount(async () => {
 		const L = await import('leaflet');
 
-		trueAges = shuffle_years(min_year, max_year); // ✅ overwrite global, not local
-		trueAge = trueAges.shift(); // ✅ set the first round's target
+		const storedTrueAge = Number(sessionStorage.getItem('trueAge'));
+		const storedScore = Number(sessionStorage.getItem('score'));
+		const storedRound = Number(sessionStorage.getItem('round'));
+
+		// Only set up the first trueAge if there isn't one already
+		if (!isNaN(storedTrueAge)) {
+			trueAge = storedTrueAge;
+		} else {
+			trueAges = shuffle_years(min_year, max_year);
+			trueAge = trueAges.shift();
+			sessionStorage.setItem('trueAge', trueAge!.toString());
+		}
+
+		round = isNaN(storedRound) ? 1 : storedRound;
+		score = isNaN(storedScore) ? 0 : storedScore;
 
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
@@ -122,9 +135,6 @@
 		).addTo(map);
 
 		await updateMap();
-
-		const stored = Number(sessionStorage.getItem('score'));
-		score = isNaN(stored) ? 0 : stored;
 	});
 
 	async function getScore() {
@@ -197,14 +207,17 @@
 	}
 	async function resetGame() {
 		sessionStorage.setItem('score', '0');
-		score = 0;
-		guess = '';
-		guessAge = '';
-		round = 1;
-		submitted = false;
+		sessionStorage.setItem('round', '1');
 
 		trueAges = shuffle_years(min_year, max_year);
 		trueAge = trueAges.shift();
+		sessionStorage.setItem('trueAge', trueAge!.toString());
+
+		score = 0;
+		round = 1;
+		guess = '';
+		guessAge = '';
+		submitted = false;
 
 		await updateMap();
 	}
@@ -251,19 +264,23 @@
 				on:click={async () => {
 					submitted = false;
 					round += 1;
-					trueAge = trueAges.shift(); // ✅ next shuffled year
+					sessionStorage.setItem('round', round.toString());
+					trueAge = trueAges.shift();
+					sessionStorage.setItem('trueAge', String(trueAge));
 					await updateMap();
 					guess = '';
 					guessAge = '';
-				}}>Next</Button
+				}}
 			>
-			>
+				Next
+			</Button>
 		{:else}
 			<Button
 				class="primary sm"
 				on:click={async () => {
 					submitted = false;
 					round += 1;
+					sessionStorage.setItem('round', round.toString());
 				}}>Finish</Button
 			>
 		{/if}
