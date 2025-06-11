@@ -170,8 +170,6 @@
       </tbody>
     </table>
   {/if}
-
-  <div id="map"></div>
   <p>
     Based on <a href="https://seshat-db.com/" target="_blank">Seshat: Global History Databank</a>.
   </p>
