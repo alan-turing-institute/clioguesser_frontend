@@ -82,7 +82,7 @@
 							})
 							.openTooltip(event.latlng);
 
-						const newPenalty = hint_penalty * 0.9;
+						const newPenalty = hint_penalty * 0.95;
 						dispatch('hintPenaltyUpdate', newPenalty);
 					}
 				});
