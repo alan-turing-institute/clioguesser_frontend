@@ -85,15 +85,22 @@
 				});
 
 				layer.on('mouseup', (event) => {
-					// On a mouse up event, add a popup with the shape name
-					layer
-						.bindTooltip(group.the_name, {
-							permanent: false,
-							direction: 'top',
-							className: 'custom-tooltip' // Optional: for custom styling
-						})
-						.openTooltip(event.latlng);
-						hint_penalty *= 0.9; // Reduce the hint penalty by 10% on each click
+					// On a mouse up event, add a tooltip with the shape name.
+
+					// l.tooltip([0,0]).setContent("xxx").addTo(map);
+
+					if (!layer._tooltip) {
+						// Note that latlng seems to be ignored.
+						layer
+							.bindTooltip(group.the_name, {
+								permanent: false,
+								direction: 'top',
+								className: 'custom-tooltip' // Optional: for custom styling
+							})
+							.openTooltip(event.latlng);
+
+							hint_penalty *= 0.9; // Reduce the hint penalty by 10% on each click
+					}
 				});
 
 				layer.on('mouseout', () => {
