@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/Button.svelte';
-	import { shuffledYears } from '$lib/Shuffle.js';
+	import { shuffle_years } from '$lib/shuffle.js';
 
 	async function pick_year({ min_year, max_year }) {
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
@@ -13,12 +13,13 @@
 	let max_year = 2024;
 	let score = 0;
 	let api_score = 0;
-	let trueAge = null;
+	let trueAges: number[] = [];
 	let round = 1;
 	let max_rounds = 1;
 	let submitted = false;
 	let initials = null;
 	let initialsError = '';
+	let inputError = '';
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -103,9 +104,9 @@
 
 	onMount(async () => {
 		// TODO: Update so we use this instead of a random year
-		console.log('First year', shuffledYears.shift());
 		const L = await import('leaflet');
-		trueAge = await pick_year({ min_year, max_year });
+		let trueAges = shuffle_years(min_year, max_year);
+		trueAge = trueAges.shift();
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
 
 		L.tileLayer(
@@ -195,11 +196,18 @@
 </script>
 
 <div class="container">
+	<a class="leaderboard-link" href="/leaderboard">
+		<span role="img" aria-label="Leaderboard">🏅</span>
+	</a>
 	<h1>Clioguesser</h1>
 
 	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
 	<p>Round {round} of {max_rounds}</p>
 	<p>Current score: {score}</p>
+	<p>
+		Do you think you know your history? Guess the age of this map based on the polity outlines. The
+		maps cover the years {min_year} CE to {max_year} CE.
+	</p>
 
 	<p>
 		Age:
@@ -208,6 +216,15 @@
 			<Button
 				class="primary sm"
 				on:click={async () => {
+					inputError = '';
+					if (isNaN(Number(guess)) || guess.trim() === '') {
+						inputError = 'Please enter a valid number.';
+						return;
+					}
+					if (Number(guess) < min_year || Number(guess) > max_year) {
+						inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+						return;
+					}
 					guessAge = guess;
 					await getScore();
 					submitted = true;
@@ -240,6 +257,9 @@
 				await resetGame();
 			}}>Restart game</Button
 		>
+		{#if inputError}
+			<span style="color: red;">{inputError}</span>
+		{/if}
 	</p>
 
 	{#if round > max_rounds}
@@ -283,7 +303,7 @@
 
 	{#if submitted === true}
 		<p>
-			The actual age of the map is {trueAge} years.
+			The actual age of the map is {trueAge} CE.
 		</p>
 		<p>
 			{#if guessAge == trueAge}
@@ -306,3 +326,35 @@
 		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
 	</p>
 </div>
+
+<style>
+	.leaderboard-link {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		width: 100px;
+		height: 100px;
+		pointer-events: auto;
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		transition: transform 0.15s;
+	}
+	.leaderboard-link span {
+		font-size: 80px;
+		width: 100px;
+		height: 100px;
+		display: block;
+		line-height: 1;
+		user-select: none;
+		pointer-events: none;
+	}
+	.leaderboard-link:hover {
+		transform: scale(1.08) rotate(-2deg);
+	}
+</style>
