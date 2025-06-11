@@ -14,6 +14,7 @@
 	let score = null;
 	let trueAge = null;
 	let hint_penalty: number = 100.0; // The penalty for using a hint, in years
+	let inputError = "";
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -164,7 +165,9 @@
 	<h1>Clioguesser</h1>
 
 	<div>
-		<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+		<p>Do you think you know your history? Guess the age of this map based on the polity outlines.
+		The maps cover the years {min_year} CE to {max_year} CE. 
+		</p>
 
 		<p class="two-column-row">
 			<span class="left-align">
@@ -176,17 +179,28 @@
 				<Button
 					class="primary sm"
 					on:click={async () => {
-						guessAge = guess;
-						await getScore();
-					}}>Submit</Button
-				>
+				inputError = "";
+				if (isNaN(Number(guess)) || guess.trim() === "") {
+				inputError = "Please enter a valid number.";
+				return;
+				}
+				if (guess < min_year || guess > max_year) {
+				inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+				return;
+				}
+				guessAge = Number(guess);
+				await getScore();
+			}}>Submit</Button>
 			</span>
 		</p>
-	</div>	
+		{#if inputError}
+		<span style="color: red;">{inputError}</span>
+		{/if}
 
+	</div>	
 	{#if score !== null}
 		<p>
-			The actual age of the map is {trueAge} years.
+			The actual age of the map is {trueAge} CE.
 		</p>
 		<p>
 			{#if guessAge == trueAge}
