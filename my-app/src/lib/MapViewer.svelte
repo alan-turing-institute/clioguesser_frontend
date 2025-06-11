@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fetchGeojsonFeatures } from '$lib/api';
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 
 	export let trueAge: number;
 	export let hint_penalty: number;
@@ -67,9 +69,7 @@
 				layer.options.pane = 'borders';
 
 				layer.on('mouseover', () => {
-					group.eachLayer((l) =>
-						l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 })
-					);
+					group.eachLayer((l) => l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 }));
 				});
 
 				layer.on('mouseup', (event) => {
@@ -83,14 +83,12 @@
 							.openTooltip(event.latlng);
 
 						const newPenalty = hint_penalty * 0.9;
-						onHintUsed?.(newPenalty);
+						dispatch('hintPenaltyUpdate', newPenalty);
 					}
 				});
 
 				layer.on('mouseout', () => {
-					group.eachLayer((l) =>
-						l.setStyle({ weight: 1, color: 'black', fillOpacity: 1 })
-					);
+					group.eachLayer((l) => l.setStyle({ weight: 1, color: 'black', fillOpacity: 1 }));
 				});
 			});
 
