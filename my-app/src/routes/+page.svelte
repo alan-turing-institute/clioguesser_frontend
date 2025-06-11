@@ -7,13 +7,15 @@
 		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
 	}
 
-
 	let guess = '';
 	let guessAge = '';
 	let min_year = 1500;
 	let max_year = 2024;
-	let score = null;
+	let score = 0;
 	let trueAge = null;
+	let round = 1;
+	let max_rounds = 10;
+	let submitted = false;
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -27,7 +29,7 @@
 			const jsonData = await response.json();
 
 			const features = jsonData.shapes.map((shape) => {
-        console.log('Shape name:', shape.name);
+				console.log('Shape name:', shape.name);
 				return {
 					geometry: JSON.parse(shape.geom_json),
 					colour: shape.colour,
@@ -76,7 +78,7 @@
 						l.setStyle({
 							weight: 3,
 							color: '#FFD700',
-							fillOpacity: 0.7
+							fillOpacity: 1
 						});
 					});
 				});
@@ -114,60 +116,77 @@
 		await updateMap();
 	});
 	async function getScore() {
-	try {
-		const response = await fetch(
-			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
-			{
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				credentials: 'include'
-			}
-		);
+		try {
+			const response = await fetch(
+				`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					credentials: 'include'
+				}
+			);
 
-		if (response.ok) {
-			const data = await response.json();
-			score = data.score;
+			if (response.ok) {
+				const data = await response.json();
+				score = data.score;
 
-			const sessionScore = sessionStorage.getItem('score');
-			if (sessionScore === null) {
-				sessionStorage.setItem('score', score.toString());
+				const sessionScore = sessionStorage.getItem('score');
+				if (sessionScore === null) {
+					sessionStorage.setItem('score', score.toString());
+				} else {
+					const newScore = parseInt(sessionScore, 10) + score;
+					sessionStorage.setItem('score', newScore.toString());
+				}
+
+				console.log('Score updated:', score);
+				console.log('Session score:', sessionStorage.getItem('score'));
 			} else {
-				const newScore = parseInt(sessionScore, 10) + score;
-				sessionStorage.setItem('score', newScore.toString());
+				score = 'Error fetching score';
+				console.error('Failed to fetch score:', response.statusText);
 			}
-
-			console.log('Score updated:', score);
-			console.log('Session score:', sessionStorage.getItem('score'));
-		} else {
+		} catch (error) {
 			score = 'Error fetching score';
-			console.error('Failed to fetch score:', response.statusText);
+			console.error('Error occurred while fetching score:', error);
 		}
-	} catch (error) {
-		score = 'Error fetching score';
-		console.error('Error occurred while fetching score:', error);
 	}
-}
 </script>
 
 <div class="container">
 	<h1>Clioguesser</h1>
 
 	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+	<p>Round {round} of {max_rounds}</p>
+	<p>Current score: {score}</p>
 
 	<p>
 		Age:
 		<input bind:value={guess} placeholder="enter your guess" />
-		<Button
-			class="primary sm"
-			on:click={async () => {
-				guessAge = guess;
-				await getScore();
-			}}>Submit</Button
-		>
+		{#if submitted===false}
+			<Button
+				class="primary sm"
+				on:click={async () => {
+					guessAge = guess;
+					await getScore();
+					submitted = true;
+				}}>Submit</Button
+			>
+		{:else}
+			<Button
+				class="primary sm"
+				on:click={async () => {
+					submitted = false;
+					round += 1;
+					trueAge = await pick_year({ min_year, max_year });
+					await updateMap();
+					guess = '';
+					guessAge = '';
+				}}>next</Button
+			>
+		{/if}
 	</p>
 
-	{#if score !== null}
+	{#if submitted===true}
 		<p>
 			The actual age of the map is {trueAge} years.
 		</p>
@@ -184,7 +203,7 @@
 				>
 			{/if}
 		</p>
-		<p>Score: {score}</p>
+		<!-- <p>Score: {score}</p> -->
 	{/if}
 
 	<div id="map"></div>
