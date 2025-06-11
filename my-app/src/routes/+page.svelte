@@ -314,7 +314,7 @@
 
 	<p class="two-column-row">
 		<span class="left-align">
-			Hint Penalty: {Math.round(hint_penalty)}%
+			Hint modifier: {Math.round(hint_penalty)}%
 		</span>
 		<span class="right-align"> Year: </span>
 		<input
