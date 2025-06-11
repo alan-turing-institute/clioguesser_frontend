@@ -54,8 +54,17 @@
 	let map;
 
 	async function updateMap() {
+		// Clear all layers except the tile layer
+		map.eachLayer((layer) => {
+			// Only remove non-tile layers
+			if (!(layer instanceof L.TileLayer)) {
+				map.removeLayer(layer);
+			}
+		});
+
 		const features = await fetchGeojsonFeatures();
 		const groups = {}; // group_id -> LayerGroup
+
 		features.forEach((feature) => {
 			const layer = L.geoJSON(feature.geometry, {
 				style: {
@@ -68,7 +77,7 @@
 				}
 			});
 
-			const groupId = feature.shape_name; // Assuming shape_id is the group identifier
+			const groupId = feature.shape_name;
 			if (!groups[groupId]) {
 				groups[groupId] = L.layerGroup();
 			}
@@ -76,7 +85,6 @@
 			groups[groupId].addLayer(layer);
 		});
 
-		// Add hover events to each group
 		Object.values(groups).forEach((group) => {
 			group.eachLayer((layer) => {
 				layer.on('mouseover', () => {
