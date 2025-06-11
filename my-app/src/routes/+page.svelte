@@ -44,6 +44,8 @@
 	let max_year = 2024;
 	let score = null;
 	let trueAge = null;
+  let inputError = "";
+
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -176,10 +178,22 @@
 		<Button
 			class="primary sm"
 			on:click={async () => {
-				guessAge = guess;
-				await getScore();
-			}}>Submit</Button
-		>
+        inputError = "";
+        if (isNaN(Number(guess)) || guess.trim() === "") {
+          inputError = "Please enter a valid number.";
+          return;
+        }
+        if (guess < min_year || guess > max_year) {
+          inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+          return;
+        }
+        guessAge = Number(guess);
+        await getScore();
+      }}>Submit</Button
+    >
+    {#if inputError}
+      <span style="color: red;">{inputError}</span>
+    {/if}
 	</p>
 
 	{#if score !== null}
