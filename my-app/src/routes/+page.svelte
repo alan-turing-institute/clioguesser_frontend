@@ -87,6 +87,9 @@
 
 		Object.values(groups).forEach((group) => {
 			group.eachLayer((layer) => {
+				// Ensure the layer uses the "borders" pane
+				layer.options.pane = 'borders';
+
 				layer.on('mouseover', () => {
 					group.eachLayer((l) => {
 						l.setStyle({
@@ -94,6 +97,7 @@
 							color: '#FFD700',
 							fillOpacity: 1
 						});
+						l.bringToFront(); // Ensure it’s on top even if other polygons overlap
 					});
 				});
 
@@ -152,6 +156,9 @@
 
 		// Map setup
 		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
+
+		map.createPane('borders');
+		map.getPane('borders')!.style.zIndex = '650'; // higher than tileLayer (default is ~400)
 
 		L.tileLayer(
 			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -245,6 +252,7 @@
 		round = 1;
 		guess = '';
 		guessAge = '';
+		inputError = '';
 		submitted = false;
 
 		await updateMap();
@@ -267,7 +275,43 @@
 
 	<p>
 		Age:
-		<input bind:value={guess} placeholder="enter your guess" />
+		<input
+			bind:value={guess}
+			placeholder="enter your guess"
+			on:keydown={async (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					inputError = '';
+
+					if (!submitted) {
+						if (isNaN(Number(guess)) || guess.trim() === '') {
+							inputError = 'Please enter a valid number.';
+							return;
+						}
+						if (Number(guess) < min_year || Number(guess) > max_year) {
+							inputError = `Please enter a number between ${min_year} and ${max_year}.`;
+							return;
+						}
+						guessAge = guess;
+						await getScore();
+						submitted = true;
+					} else if (submitted && round < max_rounds) {
+						submitted = false;
+						round += 1;
+						sessionStorage.setItem('round', round.toString());
+						trueAge = trueAges.shift();
+						sessionStorage.setItem('trueAge', String(trueAge));
+						await updateMap();
+						guess = '';
+						guessAge = '';
+					} else if (submitted && round >= max_rounds) {
+						submitted = false;
+						round += 1;
+						sessionStorage.setItem('round', round.toString());
+					}
+				}
+			}}
+		/>
 		{#if submitted === false}
 			<Button
 				class="primary sm"
@@ -319,7 +363,9 @@
 			}}>Restart game</Button
 		>
 		{#if inputError}
-			<span style="color: red;">{inputError}</span>
+			<p class="text-red-500 text mt-1">
+				<span style="color: red;">{inputError}</span>
+			</p>
 		{/if}
 	</p>
 
