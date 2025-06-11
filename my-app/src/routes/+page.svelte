@@ -12,10 +12,13 @@
 	let min_year = 1500;
 	let max_year = 2024;
 	let score = 0;
+	let api_score = 0;
 	let trueAge = null;
 	let round = 1;
-	let max_rounds = 10;
+	let max_rounds = 1;
 	let submitted = false;
+	let initials = null;
+	let initialsError = '';
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -114,7 +117,10 @@
 			}
 		).addTo(map);
 		await updateMap();
+		const stored = Number(sessionStorage.getItem('score'));
+		score = isNaN(stored) ? 0 : stored;
 	});
+
 	async function getScore() {
 		try {
 			const response = await fetch(
@@ -129,26 +135,62 @@
 
 			if (response.ok) {
 				const data = await response.json();
-				score = data.score;
+				api_score = data.score;
 
-				const sessionScore = sessionStorage.getItem('score');
-				if (sessionScore === null) {
-					sessionStorage.setItem('score', score.toString());
-				} else {
-					const newScore = parseInt(sessionScore, 10) + score;
-					sessionStorage.setItem('score', newScore.toString());
-				}
+				const current = Number(sessionStorage.getItem('score')) || 0;
+				const updated = current + api_score;
 
-				console.log('Score updated:', score);
-				console.log('Session score:', sessionStorage.getItem('score'));
+				sessionStorage.setItem('score', updated.toString());
+
+				// ✅ Manually update score to trigger reactivity
+				score = updated;
+
+				console.log('Score updated:', api_score);
 			} else {
-				score = 'Error fetching score';
 				console.error('Failed to fetch score:', response.statusText);
 			}
 		} catch (error) {
-			score = 'Error fetching score';
 			console.error('Error occurred while fetching score:', error);
 		}
+	}
+
+	async function submitLeaderboard(initials: string) {
+		if (initials.length !== 3) {
+			initialsError = 'Initials must be exactly 3 characters.';
+			return;
+		}
+		initialsError = ''; // clear previous error
+
+		try {
+			const response = await fetch(
+				`http://localhost:8000/api/leaderboard/?initials=${initials}&score=${score}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				}
+			);
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log('Leaderboard submission successful:', data);
+			} else {
+				console.error('Failed to submit to leaderboard:', response.statusText);
+			}
+		} catch (error) {
+			console.error('Error occurred while submitting to leaderboard:', error);
+		}
+	}
+	async function resetGame() {
+		sessionStorage.setItem('score', '0');
+		score = 0;
+		guess = '';
+		guessAge = '';
+		round = 1;
+		submitted = false;
+		trueAge = await pick_year({ min_year, max_year });
+		updateMap();
 	}
 </script>
 
@@ -162,7 +204,7 @@
 	<p>
 		Age:
 		<input bind:value={guess} placeholder="enter your guess" />
-		{#if submitted===false}
+		{#if submitted === false}
 			<Button
 				class="primary sm"
 				on:click={async () => {
@@ -171,7 +213,7 @@
 					submitted = true;
 				}}>Submit</Button
 			>
-		{:else}
+		{:else if round < max_rounds}
 			<Button
 				class="primary sm"
 				on:click={async () => {
@@ -183,10 +225,63 @@
 					guessAge = '';
 				}}>next</Button
 			>
+		{:else}
+			<Button
+				class="primary sm"
+				on:click={async () => {
+					submitted = false;
+					round += 1;
+				}}>Finish</Button
+			>
 		{/if}
+		<Button
+			class="secondary sm"
+			on:click={async () => {
+				await resetGame();
+			}}>Restart game</Button
+		>
 	</p>
 
-	{#if submitted===true}
+	{#if round > max_rounds}
+		<div class="modal-backdrop">
+			<div class="modal-content">
+				<h2 class="text-xl font-bold mb-2">Game Over</h2>
+				<p>Your final score is <strong>{score}</strong> points.</p>
+
+				<div class="mt-4">
+					<label for="initials" class="block mb-2 font-medium">Enter your initials:</label>
+					<input
+						id="initials"
+						type="text"
+						bind:value={initials}
+						maxlength="3"
+						placeholder="ABC"
+						class="w-full px-3 py-2 border rounded-md text-black text-center uppercase font-bold"
+					/>
+					{#if initialsError}
+						<p class="text-red-500 text-sm mt-1">{initialsError}</p>
+					{/if}
+				</div>
+
+				<div class="button-row">
+					<Button class="primary sm" on:click={() => submitLeaderboard(initials)}>
+						Submit to Leaderboard
+					</Button>
+
+					<Button
+						class="secondary sm"
+						on:click={async () => {
+							await resetGame();
+						}}
+					>
+						Play Again
+					</Button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	{#if submitted === true}
 		<p>
 			The actual age of the map is {trueAge} years.
 		</p>
