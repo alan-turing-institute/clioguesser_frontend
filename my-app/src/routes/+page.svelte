@@ -17,7 +17,7 @@
 	let trueAges: number[] = [];
 	let trueAge: number | null = null;
 	let round = 1;
-	let max_rounds = 1;
+	let max_rounds = 10;
 	let submitted = false;
 	let initials = '';
 	let initialsError = '';
