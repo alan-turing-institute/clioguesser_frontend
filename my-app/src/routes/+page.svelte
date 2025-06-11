@@ -22,6 +22,7 @@
 	let initials = '';
 	let initialsError = '';
 	let inputError = '';
+	let hint_penalty: number = 100.0; // The penalty for using a hint, in years
 
 	async function fetchGeojsonFeatures() {
 		try {
@@ -53,7 +54,7 @@
 
 	let map;
 
-	async function updateMap() {
+	async function updateMap(l) {
 		// Clear all layers except the tile layer
 		map.eachLayer((layer) => {
 			// Only remove non-tile layers
@@ -66,7 +67,7 @@
 		const groups = {}; // group_id -> LayerGroup
 
 		features.forEach((feature) => {
-			const layer = L.geoJSON(feature.geometry, {
+			const layer = l.geoJSON(feature.geometry, {
 				style: {
 					color: 'black',
 					weight: 1,
@@ -79,7 +80,9 @@
 
 			const groupId = feature.shape_name;
 			if (!groups[groupId]) {
-				groups[groupId] = L.layerGroup();
+				let layer_group = l.layerGroup();
+				layer_group.the_name = feature.shape_name;
+				groups[groupId] = layer_group;
 			}
 
 			groups[groupId].addLayer(layer);
@@ -101,6 +104,26 @@
 					});
 				});
 
+				layer.on('mouseup', (event) => {
+					// On a mouse up event, add a tooltip with the shape name.
+
+					// l.tooltip([0,0]).setContent("xxx").addTo(map);
+
+					if (!layer._tooltip) {
+						// Note that latlng seems to be ignored.
+						layer
+							.bindTooltip(group.the_name, {
+								permanent: false,
+								direction: 'top',
+								className: 'custom-tooltip' // Optional: for custom styling
+							})
+							.openTooltip(event.latlng);
+
+						hint_penalty *= 0.9; // Reduce the hint penalty by 10% on each click
+						sessionStorage.setItem('hint_penalty', hint_penalty.toString());
+					}
+				});
+
 				layer.on('mouseout', () => {
 					group.eachLayer((l) => {
 						l.setStyle({
@@ -120,6 +143,13 @@
 		const L = await import('leaflet');
 
 		// Retrieve values directly from session storage
+		const storedPenaltyStr = sessionStorage.getItem('hint_penalty');
+		if (storedPenaltyStr !== null) {
+			hint_penalty = Number(storedPenaltyStr);
+		} else {
+			hint_penalty = 100.0;
+			sessionStorage.setItem('hint_penalty', '100.0');
+		}
 		const storedTrueAgeStr = sessionStorage.getItem('trueAge');
 		const storedRoundStr = sessionStorage.getItem('round');
 		const storedScoreStr = sessionStorage.getItem('score');
@@ -169,13 +199,14 @@
 			}
 		).addTo(map);
 
-		await updateMap();
+		await updateMap(L);
 	});
 
 	async function getScore() {
 		try {
+			let multiplier = Math.round(365 * (hint_penalty / 100.0));
 			const response = await fetch(
-				`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+				`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}&multiplier=${multiplier}`,
 				{
 					headers: {
 						'Content-Type': 'application/json'
@@ -243,6 +274,8 @@
 	async function resetGame() {
 		sessionStorage.setItem('score', '0');
 		sessionStorage.setItem('round', '1');
+		sessionStorage.setItem('hint_penalty', '100.0');
+		hint_penalty = 100.0;
 
 		trueAges = shuffle_years(min_year, max_year);
 		trueAge = trueAges.shift();
@@ -255,7 +288,7 @@
 		inputError = '';
 		submitted = false;
 
-		await updateMap();
+		await updateMap(L);
 	}
 </script>
 
@@ -273,8 +306,11 @@
 		maps cover the years {min_year} CE to {max_year} CE.
 	</p>
 
-	<p>
-		Age:
+	<p class="two-column-row">
+		<span class="left-align">
+			Hint Penalty: {Math.round(hint_penalty)}%
+		</span>
+		<span class="right-align"> Age: </span>
 		<input
 			bind:value={guess}
 			placeholder="enter your guess"
@@ -299,13 +335,15 @@
 						guessAge = guess;
 						await getScore();
 						submitted = true;
+						hint_penalty = 100.0;
+						sessionStorage.setItem('hint_penalty', '100.0');
 					} else if (submitted && round < max_rounds) {
 						submitted = false;
 						round += 1;
 						sessionStorage.setItem('round', round.toString());
 						trueAge = trueAges.shift();
 						sessionStorage.setItem('trueAge', String(trueAge));
-						await updateMap();
+						await updateMap(L);
 						guess = '';
 						guessAge = '';
 					} else if (submitted && round >= max_rounds) {
@@ -333,6 +371,8 @@
 					}
 					guessAge = guess;
 					await getScore();
+					hint_penalty = 100.0;
+					sessionStorage.setItem('hint_penalty', '100.0');
 					submitted = true;
 				}}
 			>
@@ -348,7 +388,7 @@
 					sessionStorage.setItem('round', round.toString());
 					trueAge = trueAges.shift();
 					sessionStorage.setItem('trueAge', String(trueAge));
-					await updateMap();
+					await updateMap(L);
 					guess = '';
 					guessAge = '';
 				}}
@@ -457,3 +497,49 @@
 		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
 	</p>
 </div>
+
+<style>
+	.leaderboard-link {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		width: 100px;
+		height: 100px;
+		pointer-events: auto;
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		transition: transform 0.15s;
+	}
+	.leaderboard-link span {
+		font-size: 80px;
+		width: 100px;
+		height: 100px;
+		display: block;
+		line-height: 1;
+		user-select: none;
+		pointer-events: none;
+	}
+	.leaderboard-link:hover {
+		transform: scale(1.08) rotate(-2deg);
+	}
+	.two-column-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 2rem;
+		width: 100%;
+	}
+	.left-align {
+		flex: 2;
+		text-align: left;
+	}
+	.right-align {
+		flex: 4;
+		text-align: right;
+	}
+</style>
