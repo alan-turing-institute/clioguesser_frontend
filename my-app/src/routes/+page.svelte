@@ -170,7 +170,9 @@
   </a>
 	<h1>Clioguesser</h1>
 
-	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
+	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.
+    The maps cover the years {min_year} CE to {max_year} CE. 
+  </p>
 
 	<p>
 		Age:
@@ -198,7 +200,7 @@
 
 	{#if score !== null}
 		<p>
-			The actual age of the map is {trueAge} years.
+			The actual age of the map is {trueAge} CE.
 		</p>
 		<p>
 			{#if guessAge == trueAge}
