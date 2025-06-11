@@ -4,6 +4,7 @@
 	import GuessInput from '$lib/GuessInput.svelte';
 	import GameOverModal from '$lib/GameOverModal.svelte';
 	import MapViewer from '$lib/MapViewer.svelte';
+	import GameHeader from '$lib/GameHeader.svelte';
 	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
 	let guess = '';
@@ -88,14 +89,7 @@
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
-	<h1>Clioguesser</h1>
-
-	<p>
-		Do you think you know your history? Guess the year of this map based on the polity outlines.
-	</p>
-	<p>Round {round} of {max_rounds}</p>
-	<p>Current score: {score}</p>
-	<p>The maps cover the years {formatYear(min_year)} to {formatYear(max_year)}.</p>
+	<GameHeader {round} {max_rounds} {score} {min_year} {max_year} {submitted} {guessAge} {trueAge} />
 
 	<GuessInput
 		{guess}
@@ -131,22 +125,6 @@
 		submitLeaderboard={handleSubmitLeaderboard}
 		{resetGame}
 	/>
-
-	{#if submitted}
-		<p>The actual age of the map is {trueAge} CE.</p>
-		<p>
-			{#if guessAge == trueAge}
-				<span class="correct">Correct! Very impressive</span>
-			{:else if Math.abs(guessAge - trueAge) < 50}
-				<span class="incorrect">Nearly! You were off by {Math.abs(guessAge - trueAge)} years.</span>
-			{:else}
-				<span class="incorrect"
-					>Incorrect! You were off by {Math.abs(guessAge - trueAge)} years.</span
-				>
-			{/if}
-		</p>
-	{/if}
-
 	<MapViewer {trueAge} {hint_penalty} on:hintPenaltyUpdate={(e) => (hint_penalty = e.detail)} />
 
 	<p>Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.</p>
