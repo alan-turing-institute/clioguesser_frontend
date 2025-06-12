@@ -14,6 +14,8 @@
 	export let showIntroHelp: boolean;
 	export let formatYear: (y: number) => string;
 
+	let highlightedCountry: string | null = null;
+
 	export let trueAge: number;
 	export let hint_penalty: number;
 	export let onHintUsed: (penalty: number) => void;
@@ -81,26 +83,33 @@
 		}
 
 		Object.values(groups).forEach((group) => {
+			let wasClicked = false;
+
 			group.eachLayer((layer) => {
 				layer.options.pane = 'borders';
 
 				layer.on('mouseover', () => {
 					group.eachLayer((l) => l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 }));
+
+					if (wasClicked) {
+						highlightedCountry = group.the_name;
+					} else {
+						highlightedCountry = null;
+					}
 				});
 
-				layer.on('mouseup', (event) => {
-					if (!layer._tooltip) {
-						layer
-							.bindTooltip(group.the_name, {
-								permanent: false,
-								direction: 'top',
-								className: 'custom-tooltip'
-							})
-							.openTooltip(event.latlng);
+				layer.on('mouseup', () => {
+					highlightedCountry = group.the_name;
+					wasClicked = true;
 
-						const newPenalty = hint_penalty * 0.95;
-						dispatch('hintPenaltyUpdate', newPenalty);
-					}
+					clearTimeout(fadeTimeout);
+					fadeTimeout = setTimeout(() => {
+						highlightedCountry = null;
+						wasClicked = false;
+					}, 3000); // hide after 3 seconds
+
+					const newPenalty = hint_penalty * 0.95;
+					dispatch('hintPenaltyUpdate', newPenalty);
 				});
 
 				layer.on('mouseout', () => {
@@ -134,7 +143,7 @@
 	<div id="map" class="map-container"></div>
 	{#if showIntroHelp === false}
 		<div
-			class="bg-white/10 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
+			class="bg-white/80 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
 		>
 			<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
 			<div class="text-black dark:text-white text-xl">
@@ -163,6 +172,12 @@
 			</div>
 		{/if}
 	{/if}
+	<div
+		class="absolute bottom-4 left-4 bg-white/80 text-black dark:text-white dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001] text-lg font-bold border border-white dark:border-black backdrop-blur-sm pointer-events-none w-[250px] h-[80px] flex flex-col justify-start items-center text-center gap-1"
+	>
+		<div>Current Hint</div>
+		<div class="text-base font-normal">{highlightedCountry || ''}</div>
+	</div>
 </div>
 
 <!-- 		{#if submitted && trueAge !== null}
