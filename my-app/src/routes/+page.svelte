@@ -134,5 +134,5 @@
 		}}
 	/>
 
-	<p>Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.</p>
+	Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
 </div>
