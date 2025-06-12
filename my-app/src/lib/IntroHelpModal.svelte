@@ -41,8 +41,9 @@
 
 	<ul class="text-black dark:text-white space-y-1 leading-tight mb-4">
 		<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
-		<li>Use the polity outlines to guess the age of the map.</li>
-		<li>Submit your guess to see how close you are.</li>
+		<li>Use the polity outlines to guess the age of the map</li>
+		<li>Use the CE / BCE button to change the era</li>
+		<li>Submit your guess to see how close you are</li>
 		<li>Hover over a polity to show its boundaries</li>
 		<li>You can use hints if you get stuck. Click on a country to see its name in the bottom left</li>
 		<li><span class="font-bold text-red-600">WARNING</span>: each hint reduces your score for that round!</li>
