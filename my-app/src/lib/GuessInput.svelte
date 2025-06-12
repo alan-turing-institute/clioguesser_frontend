@@ -183,9 +183,11 @@
 			<button class="close-btn" on:click={() => setInputError('')} aria-label="Close">&times;</button>
 		</div>
 	{/if}
-	<span class="centre-label" class:pop-effect={popHint}>
-		Hint modifier: {Math.round(hint_penalty)}%
-	</span>
+	{#if !submitted}
+		<span class="centre-label" class:pop-effect={popHint}>
+			Hint modifier: {Math.round(hint_penalty)}%
+		</span>
+	{/if}
 	<Button
 		class="secondary sm restart-btn"
 		on:click={async () => {
