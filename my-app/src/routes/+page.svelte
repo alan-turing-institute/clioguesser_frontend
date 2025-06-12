@@ -162,6 +162,6 @@
 	/>
 
 	<p class="text-center mt-4 text-sm text-gray-400">
-		Based on <a class="underline" href="https://seshat-db.com/">Seshat: Global History Databank</a>.
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
 	</p>
 </div>
