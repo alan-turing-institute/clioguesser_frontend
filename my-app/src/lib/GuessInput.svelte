@@ -12,11 +12,13 @@
 	export let trueAge: number | null;
 	export let trueAges: number[];
 	export let L: any;
+	export let finished: boolean;
 
 	export let getScore: () => Promise<void>;
 	export let updateMap: (L: any) => Promise<void>;
 	export let resetGame: () => Promise<void>;
 
+	export let setFinished: (val: boolean) => void;
 	export let setGuess: (val: string) => void;
 	export let setGuessAge: (val: string) => void;
 	export let setInputError: (val: string) => void;
@@ -80,7 +82,7 @@
 				disabled={round > max_rounds}
 				style="max-width: 120px;"
 				on:keydown={async (e) => {
-					if (round > max_rounds) return;
+					if (round == max_rounds && submitted) return;
 
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -168,8 +170,9 @@
 			disabled={round > max_rounds}
 			on:click={async () => {
 				setSubmitted(false);
-				setRound(round + 1);
-				sessionStorage.setItem('round', (round + 1).toString());
+				setFinished(true);
+				// setRound(round + 1);
+				// sessionStorage.setItem('round', (round + 1).toString());
 			}}
 		>
 			Finish

@@ -23,6 +23,7 @@
 	let initialsError = '';
 	let inputError = '';
 	let hint_penalty: number = 100.0;
+	let finished = false;
 
 	let era: 'CE' | 'BCE' = 'CE';
 
@@ -129,6 +130,8 @@
 				{resetGame}
 				{era}
 				{setEra}
+				{finished}
+				setFinished={(val) => (finished = val)}
 				setGuess={(val) => (guess = val)}
 				setGuessAge={(val) => (guessAge = val)}
 				setInputError={(val) => (inputError = val)}
@@ -142,7 +145,7 @@
 	</div>
 
 	<GameOverModal
-		show={round > max_rounds}
+		show={round == max_rounds && finished}
 		{score}
 		{initials}
 		{initialsError}
