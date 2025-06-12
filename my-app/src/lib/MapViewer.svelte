@@ -120,7 +120,9 @@
 	function formatEraAdjustedYear(year: number): string {
 		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
 	}
-
+	function formatScore(score: number): string {
+		return new Intl.NumberFormat('en-US').format(score);
+	}
 	$: adjustedGuess = getEraAdjustedGuess(guessAge, era);
 	$: errorMargin = Math.abs(adjustedGuess - trueAge);
 </script>
@@ -135,7 +137,7 @@
 		<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
 		<div class="text-black dark:text-white text-xl">
 			<span class="font-bold">Current score:</span>
-			<span class="font-normal ml-1">{score}</span>
+			<span class="font-normal ml-1">{formatScore(score)}</span>
 		</div>
 	</div>
 	{#if submitted}
