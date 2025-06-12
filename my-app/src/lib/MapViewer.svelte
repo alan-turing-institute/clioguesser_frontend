@@ -16,7 +16,12 @@
 		L = await import('leaflet');
 
 		map = L.map('map', {
-			crs: L.CRS.EPSG3857
+			crs: L.CRS.EPSG3857,
+			maxBounds: [
+				[-85, -180],
+				[85, 180]
+			],
+			maxBoundsViscosity: 1.0 // Prevents panning outside bounds
 		}).setView([0, 0], 2);
 
 		map.createPane('borders');
