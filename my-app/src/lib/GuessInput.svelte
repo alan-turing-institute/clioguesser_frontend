@@ -69,15 +69,10 @@
     $: inputDisabled = submitted;
 </script>
 
-<div class="two-column-row">
-    <span class="left-align">
-        <span class:pop-effect={popHint}>
-            Hint modifier: {Math.round(hint_penalty)}%
-        </span>
-    </span>
+<div class="left-align">
 
     {#if !submitted || round > max_rounds}
-        <span class="right-align">Year:</span>
+        <span>Year:</span>
         <div class="input-era-row">
             <input
                 id="guess-input"
@@ -197,22 +192,17 @@
 			<button class="close-btn" on:click={() => setInputError('')} aria-label="Close">&times;</button>
 		</div>
 	{/if}
+	<span class:pop-effect={popHint}>
+		Hint modifier: {Math.round(hint_penalty)}%
+	</span>
 </div>
 
 <style>
-	.two-column-row {
+	.left-align {
+		text-align: left;
 		display: flex;
 		justify-content: space-between;
 		gap: 2rem;
-		width: 100%;
-	}
-	.left-align {
-		flex: 2;
-		text-align: left;
-	}
-	.right-align {
-		flex: 4;
-		text-align: right;
 	}
 	.pop-effect {
         animation: pop 0.5s cubic-bezier(.36,2,.6,.99);
