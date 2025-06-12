@@ -22,18 +22,20 @@
 </script>
 
 {#if show}
-    <!-- <div class="modal-backdrop" on:click={closeModal}></div> -->
-    <div class="modal" role="dialog" aria-modal="true" aria-label="How to Play">
-        <button class="close-btn" on:click={closeModal} aria-label="Close">&times;</button>
+
+    <div class="modal-backdrop">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-label="How to Play">
+            <button class="close-btn" on:click={closeModal} aria-label="Close">&times;</button>
             <h2>How to Play Clioguesser</h2>
-            <ol>
-                <!-- <li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li> -->
-                <li>Use the polity outlines to guess the age of the map.</li>
-                <li>Submit your guess to see how close you are.</li>
-                <li>You can use hints if you get stuck, but each hint reduces your score!</li>
-                <li>To use a hint, click on a polity to show the name.</li>
-            </ol>
-   </div>
+                <ol>
+                    <!-- <li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li> -->
+                    <li>Use the polity outlines to guess the age of the map.</li>
+                    <li>Submit your guess to see how close you are.</li>
+                    <li>You can use hints if you get stuck, but each hint reduces your score!</li>
+                    <li>To use a hint, click on a polity to show the name.</li>
+                </ol>
+        </div>
+    </div>
      
     <!-- <div class="modal-backdrop">
         <div class="modal-content">
