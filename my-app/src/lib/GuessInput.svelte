@@ -72,7 +72,7 @@
 
 <div class="flex items-center gap-4 justify-center w-full h-16">
 	{#if !submitted || round > max_rounds}
-		<span class="text-sm">Year:</span>
+		<span class="text">Year:</span>
 		<div class="input-era-row">
 			<input
 				id="guess-input"
