@@ -112,7 +112,7 @@
 							setTrueAge(next);
 							sessionStorage.setItem('trueAge', String(next));
 							await updateMap(L);
-							setGuess(localGuess);
+							setGuess('');
 							guessInputKey += 1;
 						} else if (submitted && round >= max_rounds) {
 							setSubmitted(false);
@@ -142,14 +142,13 @@
 			on:click={async () => {
 				setInputError('');
 				let ge = guess_errors(localGuess, min_year, max_year);
-				if (ge) return;
 				setGuessAge('');
 				await getScore();
 				setHintPenalty(100.0);
 				sessionStorage.setItem('hint_penalty', '100.0');
 				setSubmitted(true);
 				setEra('CE'); // Reset era to CE after submission
-				setGuess(localGuess);
+				setGuess('');
 				guessInputKey += 1;
 			}}
 		>
@@ -168,7 +167,7 @@
 				setTrueAge(next);
 				sessionStorage.setItem('trueAge', String(next));
 				await updateMap(L);
-				setGuess(localGuess);
+				setGuess('');
 				setGuessAge('');
 				guessInputKey += 1;
 			}}
