@@ -57,7 +57,7 @@
 							if (success) {
 								leaderboardSubmitted = true;
 							} else {
-								setInitialsError('Failed to submit score. Please try again.');
+								setInitialsError('Failed to submit score. Initials must be 3 characters.');
 							}
 						}}
 					>
