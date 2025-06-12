@@ -69,6 +69,7 @@
 					class="secondary sm"
 					on:click={async () => {
 						await resetGame();
+            leaderboardSubmitted = false;
 					}}
 				>
 					Play Again

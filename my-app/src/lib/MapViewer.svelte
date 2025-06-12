@@ -126,9 +126,11 @@
 	function formatEraAdjustedYear(year: number): string {
 		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
 	}
+
 	function formatScore(score: number): string {
 		return new Intl.NumberFormat('en-US').format(score);
 	}
+
 	$: adjustedGuess = getEraAdjustedGuess(guessAge, era);
 	$: errorMargin = Math.abs(adjustedGuess - trueAge);
 </script>
