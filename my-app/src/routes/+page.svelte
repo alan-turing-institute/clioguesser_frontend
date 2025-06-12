@@ -5,9 +5,10 @@
 	import GameOverModal from '$lib/GameOverModal.svelte';
 	import MapViewer from '$lib/MapViewer.svelte';
 	import GameHeader from '$lib/GameHeader.svelte';
-	import IntroHelpModal  from '$lib/IntroHelpModal.svelte';
+	import IntroHelpModal from '$lib/IntroHelpModal.svelte';
 	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
+	let guessInputKey = 0;
 	let guess = '';
 	let guessAge = '';
 	let min_year = -1000;
@@ -98,9 +99,13 @@
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
-	
+
 	<div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
-		<button class="help-btn" style="font-size: 2rem; padding: 1rem 1.5rem;" on:click={() => showIntroHelp = true}>
+		<button
+			class="help-btn"
+			style="font-size: 2rem; padding: 1rem 1.5rem;"
+			on:click={() => (showIntroHelp = true)}
+		>
 			<span role="img" aria-label="Help">❓</span>
 		</button>
 	</div>
@@ -111,7 +116,6 @@
 		{min_year}
 		{max_year}
 	/>
-	
 
 	<!-- Wrap header + input in a fixed-gap column -->
 	<div class="flex flex-col gap-4 items-center">
@@ -129,35 +133,38 @@
 		</div>
 
 		<!-- Fixed height or min-height to prevent shifting -->
-		<div class="flex items-center gap-4 justify-center w-full">
-			<GuessInput
-				{guess}
-				{round}
-				{max_rounds}
-				{min_year}
-				{max_year}
-				{submitted}
-				{inputError}
-				{hint_penalty}
-				{guessAge}
-				{trueAge}
-				{trueAges}
-				{getScore}
-				{resetGame}
-				{era}
-				{setEra}
-				{finished}
-				setFinished={(val) => (finished = val)}
-				setGuess={(val) => (guess = val)}
-				setGuessAge={(val) => (guessAge = val)}
-				setInputError={(val) => (inputError = val)}
-				setSubmitted={(val) => (submitted = val)}
-				setHintPenalty={(val) => (hint_penalty = val)}
-				setRound={(val) => (round = val)}
-				setTrueAge={(val) => (trueAge = val)}
-				setTrueAges={(val) => (trueAges = val)}
-			/>
-		</div>
+		{#key guessInputKey}
+			<div class="flex items-center gap-4 justify-center w-full">
+				<GuessInput
+					{guess}
+					{round}
+					{max_rounds}
+					{min_year}
+					{max_year}
+					{submitted}
+					{inputError}
+					{hint_penalty}
+					{guessAge}
+					{trueAge}
+					{trueAges}
+					{getScore}
+					{resetGame}
+					{era}
+					{setEra}
+					{finished}
+					{guessInputKey}
+					setFinished={(val) => (finished = val)}
+					setGuess={(val) => (guess = val)}
+					setGuessAge={(val) => (guessAge = val)}
+					setInputError={(val) => (inputError = val)}
+					setSubmitted={(val) => (submitted = val)}
+					setHintPenalty={(val) => (hint_penalty = val)}
+					setRound={(val) => (round = val)}
+					setTrueAge={(val) => (trueAge = val)}
+					setTrueAges={(val) => (trueAges = val)}
+				/>
+			</div>
+		{/key}
 	</div>
 
 	<GameOverModal
@@ -181,7 +188,6 @@
 		{max_year}
 		{submitted}
 		{guessAge}
-		{showIntroHelp}
 		{formatYear}
 		{era}
 		on:hintPenaltyUpdate={(e) => {
