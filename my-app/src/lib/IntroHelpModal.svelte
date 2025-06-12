@@ -48,7 +48,7 @@
 	</ul>
 
 	<button
-		class="!bg-black/5 dark:!bg-black/40 hover:!bg-gray-800 !text-black dark:!text-white font-bold py-2 px-6 rounded"
+		class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-green-600 dark:text-green-400 font-bold py-2 px-6 rounded"
 		on:click={closeModal}
 		aria-label="Close"
 	>
