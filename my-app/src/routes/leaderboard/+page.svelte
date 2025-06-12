@@ -59,7 +59,7 @@
 					<tr>
 						<td>{i + 1}</td>
 						<td>{player.initials}</td>
-						<td>{player.score}</td>
+						<td>{Intl.NumberFormat('en-US').format(player.score)}</td>
 					</tr>
 				{/each}
 			</tbody>
