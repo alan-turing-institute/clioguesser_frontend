@@ -5,6 +5,7 @@
 	import GameOverModal from '$lib/GameOverModal.svelte';
 	import MapViewer from '$lib/MapViewer.svelte';
 	import GameHeader from '$lib/GameHeader.svelte';
+	import IntroHelpModal  from '$lib/IntroHelpModal.svelte';
 	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
 	let guess = '';
@@ -23,6 +24,7 @@
 	let initialsError = '';
 	let inputError = '';
 	let hint_penalty: number = 100.0;
+	let showIntroHelp = true;
 	let finished = false;
 
 	let era: 'CE' | 'BCE' = 'CE';
@@ -96,6 +98,20 @@
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
+	
+	<div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
+		<button class="help-btn" style="font-size: 2rem; padding: 1rem 1.5rem;" on:click={() => showIntroHelp = true}>
+			<span role="img" aria-label="Help">❓</span>
+		</button>
+	</div>
+
+	<IntroHelpModal
+		show={showIntroHelp}
+		on:close={() => (showIntroHelp = false)}
+		{min_year}
+		{max_year}
+	/>
+	
 
 	<!-- Wrap header + input in a fixed-gap column -->
 	<div class="flex flex-col gap-4 items-center">
