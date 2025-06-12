@@ -45,6 +45,7 @@
 
 	// Update guess_errors and input handling to use era
 	function getEraAdjustedGuess(guess: string, era: 'CE' | 'BCE') {
+		console.log(`Adjusting guess: ${guess} for era: ${era}`);
 		let n = Number(guess);
 		if (era === 'BCE' && !isNaN(n)) n = -Math.abs(n);
 		if (era === 'CE' && !isNaN(n)) n = Math.abs(n);
@@ -136,7 +137,7 @@
 				setInputError('');
 				let ge = guess_errors(guess, min_year, max_year);
 				if (ge) return;
-				setGuessAge(guess);
+				setGuessAge(String(getEraAdjustedGuess(guess, era)));
 				await getScore();
 				setHintPenalty(100.0);
 				sessionStorage.setItem('hint_penalty', '100.0');
