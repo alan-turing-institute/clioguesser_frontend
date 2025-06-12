@@ -24,6 +24,12 @@
 	let inputError = '';
 	let hint_penalty: number = 100.0;
 
+	let era: 'CE' | 'BCE' = 'CE';
+
+	function setEra(val: 'CE' | 'BCE') {
+		era = val;
+	}
+
 	onMount(() => {
 		// restore from sessionStorage
 		const stored = (key: string, fallback: any) => sessionStorage.getItem(key) ?? fallback;
@@ -121,6 +127,8 @@
 				{trueAges}
 				{getScore}
 				{resetGame}
+				{era}
+				{setEra}
 				setGuess={(val) => (guess = val)}
 				setGuessAge={(val) => (guessAge = val)}
 				setInputError={(val) => (inputError = val)}
@@ -155,6 +163,7 @@
 		{submitted}
 		{guessAge}
 		{formatYear}
+		{era}
 		on:hintPenaltyUpdate={(e) => {
 			hint_penalty = e.detail;
 			sessionStorage.setItem('hint_penalty', String(hint_penalty));
@@ -162,6 +171,8 @@
 	/>
 
 	<p class="text-center mt-4 text-sm text-gray-400">
-		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank"
+			>Seshat: Global History Databank</a
+		>.
 	</p>
 </div>

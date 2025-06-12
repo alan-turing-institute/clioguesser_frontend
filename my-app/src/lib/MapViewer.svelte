@@ -16,6 +16,7 @@
 	export let trueAge: number;
 	export let hint_penalty: number;
 	export let onHintUsed: (penalty: number) => void;
+	export let era: 'CE' | 'BCE';
 
 	let map;
 	let L: any;
@@ -105,6 +106,18 @@
 			layers.push(group);
 		});
 	}
+
+	function getEraAdjustedGuess(guess: string, era: 'BCE' | 'CE'): number {
+		const n = Math.abs(Number(guess));
+		return era === 'BCE' ? -n : n;
+	}
+
+	function formatEraAdjustedYear(year: number): string {
+		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
+	}
+
+	$: adjustedGuess = getEraAdjustedGuess(guessAge, era);
+	$: errorMargin = Math.abs(adjustedGuess - trueAge);
 </script>
 
 <!-- <div id="map" class="map-container"></div> -->
@@ -124,11 +137,19 @@
 		<div
 			class="absolute top-2 left-15 transform
 	       bg-white/60 dark:bg-black/60 text-black dark:text-white
-	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none	"
+	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
 		>
-			<div class="text-red-400 text-xl font-bold">You guessed {guessAge}</div>
 			<div class="text-red-400 text-xl font-bold">
-				You were off by {Math.abs(Number(guessAge) - trueAge)} years
+				You guessed {guessAge}
+				{era}
+			</div>
+
+			<div class="text-red-400 text-xl font-bold">
+				The true year was {formatEraAdjustedYear(trueAge)}
+			</div>
+
+			<div class="text-red-400 text-xl font-bold">
+				You were off by {errorMargin} years
 			</div>
 		</div>
 	{/if}
