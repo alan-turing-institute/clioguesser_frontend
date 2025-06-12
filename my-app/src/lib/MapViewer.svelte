@@ -24,7 +24,7 @@
 
 		L.tileLayer(
 			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-			{ maxZoom: 10, minZoom: 1 }
+			{ maxZoom: 10, minZoom: 2 }
 		).addTo(map);
 
 		await renderMap(); // initial load
