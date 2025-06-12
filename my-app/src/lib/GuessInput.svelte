@@ -37,6 +37,22 @@
             setTimeout(() => popHint = false, 500); // duration matches animation
         }, 0);
     }
+
+	function guess_errors(guess, min_year, max_year) {
+		if (
+			isNaN(Number(guess)) ||
+			guess.trim() === '' ||
+			!Number.isInteger(Number(guess))
+		) {
+			setInputError('Please enter a valid year.');
+			return true;
+		}
+		if (Number(guess) < min_year || Number(guess) > max_year) {
+			setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
+			return true;
+		}
+		return false;
+	}
 </script>
 
 <div class="two-column-row">
@@ -60,18 +76,8 @@
 				setInputError('');
 
 				if (!submitted) {
-					if (
-						isNaN(Number(guess)) ||
-						guess.trim() === '' ||
-						!Number.isInteger(Number(guess))
-					) {
-						setInputError('Please enter a valid year.');
-						return;
-					}
-					if (Number(guess) < min_year || Number(guess) > max_year) {
-						setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
-						return;
-					}
+					let ge = guess_errors(guess, min_year, max_year);
+					if (ge) return;
 					setGuessAge(guess);
 					await getScore();
 					setSubmitted(true);
@@ -103,18 +109,8 @@
 			disabled={round > max_rounds}
 			on:click={async () => {
 				setInputError('');
-				if (
-					isNaN(Number(guess)) ||
-					guess.trim() === '' ||
-					!Number.isInteger(Number(guess))
-				) {
-					setInputError('Please enter a valid year.');
-					return;
-				}
-				if (Number(guess) < min_year || Number(guess) > max_year) {
-					setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
-					return;
-				}
+				let ge = guess_errors(guess, min_year, max_year);
+				if (ge) return;
 				setGuessAge(guess);
 				await getScore();
 				setHintPenalty(100.0);
