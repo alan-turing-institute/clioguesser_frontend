@@ -13,7 +13,6 @@
 	let guessAge = '';
 	let min_year = -1000;
 	let max_year = 2024;
-	let year_step = 1;
 	let score: number = 0;
 	let api_score = 0;
 	let trueAges: number[] = [];
@@ -43,12 +42,12 @@
 		round = Number(stored('round', '1'));
 
 		if (!trueAge) {
-			trueAges = shuffle_years(min_year, max_year, year_step);
+			trueAges = shuffle_years(min_year, max_year, max_rounds);
 			trueAge = trueAges.shift();
 			sessionStorage.setItem('trueAge', String(trueAge));
 		}
 		if (!trueAges.length) {
-			trueAges = shuffle_years(min_year, max_year, year_step).filter((y) => y !== trueAge);
+			trueAges = shuffle_years(min_year, max_year, max_rounds).filter((y) => y !== trueAge);
 		}
 	});
 
@@ -81,7 +80,7 @@
 		score = 0;
 		round = 1;
 		submitted = false;
-		trueAges = shuffle_years(min_year, max_year, year_step);
+		trueAges = shuffle_years(min_year, max_year, max_rounds);
 		trueAge = trueAges.shift();
 
 		sessionStorage.setItem('score', '0');
