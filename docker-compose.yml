@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "8000:5173"
     volumes:
       - ./my-app:/app
       - clioguesser_frontend:/app/node_modules
