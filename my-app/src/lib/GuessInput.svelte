@@ -72,7 +72,7 @@
 <div class="left-align">
 
     {#if !submitted || round > max_rounds}
-        <span>Year:</span>
+        <span class="centre-label">Year:</span>
         <div class="input-era-row">
             <input
                 id="guess-input"
@@ -192,7 +192,7 @@
 			<button class="close-btn" on:click={() => setInputError('')} aria-label="Close">&times;</button>
 		</div>
 	{/if}
-	<span class:pop-effect={popHint}>
+	<span class="centre-label" class:pop-effect={popHint}>
 		Hint modifier: {Math.round(hint_penalty)}%
 	</span>
 </div>
@@ -204,6 +204,11 @@
 		justify-content: space-between;
 		gap: 2rem;
 	}
+	.centre-label {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
 	.pop-effect {
         animation: pop 0.5s cubic-bezier(.36,2,.6,.99);
         color: #e63946;
