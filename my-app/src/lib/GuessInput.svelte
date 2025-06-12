@@ -53,120 +53,126 @@
 		}
 		return false;
 	}
+
+	let inputDisabled = false;
+    $: inputDisabled = submitted;
 </script>
 
 <div class="two-column-row">
-	<span class="left-align">
+    <span class="left-align">
         <span class:pop-effect={popHint}>
             Hint modifier: {Math.round(hint_penalty)}%
         </span>
     </span>
-    <span class="right-align">Year:</span>
 
-	<input
-		bind:value={guess}
-		placeholder="Enter guess (minus for BCE)"
-		disabled={round > max_rounds}
-		style="min-width: 240px;"
-		on:keydown={async (e) => {
-			if (round > max_rounds) return;
+    {#if !submitted || round > max_rounds}
+		<span class="right-align">Year:</span>
+        <input
+            id="guess-input"
+            bind:value={guess}
+            placeholder="Enter guess (minus for BCE)"
+            disabled={round > max_rounds}
+            style="min-width: 240px;"
+            on:keydown={async (e) => {
+                if (round > max_rounds) return;
 
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				setInputError('');
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    setInputError('');
 
-				if (!submitted) {
-					let ge = guess_errors(guess, min_year, max_year);
-					if (ge) return;
-					setGuessAge(guess);
-					await getScore();
-					setSubmitted(true);
-					setHintPenalty(100.0);
-					sessionStorage.setItem('hint_penalty', '100.0');
-				} else if (submitted && round < max_rounds) {
-					setSubmitted(false);
-					setRound(round + 1);
-					sessionStorage.setItem('round', (round + 1).toString());
-					const next = trueAges.shift();
-					setTrueAges([...trueAges]);
-					setTrueAge(next);
-					sessionStorage.setItem('trueAge', String(next));
-					await updateMap(L);
-					setGuess('');
-					setGuessAge('');
-				} else if (submitted && round >= max_rounds) {
-					setSubmitted(false);
-					setRound(round + 1);
-					sessionStorage.setItem('round', (round + 1).toString());
-				}
-			}
-		}}
-	/>
+                    if (!submitted) {
+                        let ge = guess_errors(guess, min_year, max_year);
+                        if (ge) return;
+                        setGuessAge(guess);
+                        await getScore();
+                        setHintPenalty(100.0);
+                        sessionStorage.setItem('hint_penalty', '100.0');
+                        setSubmitted(true);
+                    } else if (submitted && round < max_rounds) {
+                        setSubmitted(false);
+                        setRound(round + 1);
+                        sessionStorage.setItem('round', (round + 1).toString());
+                        const next = trueAges.shift();
+                        setTrueAges([...trueAges]);
+                        setTrueAge(next);
+                        sessionStorage.setItem('trueAge', String(next));
+                        await updateMap(L);
+                        setGuess('');
+                        setGuessAge('');
+                    } else if (submitted && round >= max_rounds) {
+                        setSubmitted(false);
+                        setRound(round + 1);
+                        sessionStorage.setItem('round', (round + 1).toString());
+                    }
+                }
+            }}
+        />
+    {/if}
 
-	{#if submitted === false}
-		<Button
-			class="primary sm"
-			disabled={round > max_rounds}
-			on:click={async () => {
-				setInputError('');
-				let ge = guess_errors(guess, min_year, max_year);
-				if (ge) return;
-				setGuessAge(guess);
-				await getScore();
-				setHintPenalty(100.0);
-				sessionStorage.setItem('hint_penalty', '100.0');
-				setSubmitted(true);
-			}}
-		>
-			Submit
-		</Button>
-	{:else if round < max_rounds}
-		<Button
-			class="primary sm"
-			disabled={round > max_rounds}
-			on:click={async () => {
-				setSubmitted(false);
-				setRound(round + 1);
-				sessionStorage.setItem('round', (round + 1).toString());
-				const next = trueAges.shift();
-				setTrueAges([...trueAges]);
-				setTrueAge(next);
-				sessionStorage.setItem('trueAge', String(next));
-				await updateMap(L);
-				setGuess('');
-				setGuessAge('');
-			}}
-		>
-			Next
-		</Button>
-	{:else}
-		<Button
-			class="primary sm"
-			disabled={round > max_rounds}
-			on:click={async () => {
-				setSubmitted(false);
-				setRound(round + 1);
-				sessionStorage.setItem('round', (round + 1).toString());
-			}}
-		>
-			Finish
-		</Button>
-	{/if}
+    {#if submitted === false}
+        <Button
+            class="primary sm"
+            disabled={round > max_rounds}
+            on:click={async () => {
+                setInputError('');
+                let ge = guess_errors(guess, min_year, max_year);
+                if (ge) return;
+                setGuessAge(guess);
+                await getScore();
+                setHintPenalty(100.0);
+                sessionStorage.setItem('hint_penalty', '100.0');
+                setSubmitted(true);
+            }}
+        >
+            Submit
+        </Button>
+    {:else if round < max_rounds}
+        <Button
+            class="primary sm"
+            disabled={round > max_rounds}
+            on:click={async () => {
+                setSubmitted(false);
+                setRound(round + 1);
+                sessionStorage.setItem('round', (round + 1).toString());
+                const next = trueAges.shift();
+                setTrueAges([...trueAges]);
+                setTrueAge(next);
+                sessionStorage.setItem('trueAge', String(next));
+                await updateMap(L);
+                setGuess('');
+                setGuessAge('');
+            }}
+        >
+            Next
+        </Button>
+    {:else}
+        <Button
+            class="primary sm"
+            disabled={round > max_rounds}
+            on:click={async () => {
+                setSubmitted(false);
+                setRound(round + 1);
+                sessionStorage.setItem('round', (round + 1).toString());
+            }}
+        >
+            Finish
+        </Button>
+    {/if}
 
-	<Button
-		class="secondary sm"
-		on:click={async () => {
-			await resetGame();
-		}}
-	>
-		Restart game
-	</Button>
+    <Button
+        class="secondary sm"
+        on:click={async () => {
+            await resetGame();
+        }}
+    >
+        Restart game
+    </Button>
 
-	{#if inputError}
-		<div class="text-red-500 text mt-1">
-			<span style="color: red;">{inputError}</span>
-		</div>
-	{/if}
+    {#if inputError}
+        <div class="text-red-500 text mt-1">
+            <span style="color: red;">{inputError}</span>
+        </div>
+    {/if}
 </div>
 
 <style>
