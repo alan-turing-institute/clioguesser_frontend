@@ -259,7 +259,6 @@
 		font-size: 1.1rem;
 		min-width: 260px;
 		max-width: 90vw;
-		animation: pop 0.5s cubic-bezier(0.5, 1.5, 0.5, 0.99);
 	}
 	.close-btn {
 		background: none;
