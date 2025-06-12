@@ -171,13 +171,13 @@
 				</div>
 			</div>
 		{/if}
+		<div
+			class="absolute bottom-4 left-4 bg-white/80 text-black dark:text-white dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001] text-lg font-bold border border-white dark:border-black backdrop-blur-sm pointer-events-none w-[250px] h-[80px] flex flex-col justify-start items-center text-center gap-1"
+		>
+			<div>Current Hint</div>
+			<div class="text-base font-normal">{highlightedCountry || ''}</div>
+		</div>
 	{/if}
-	<div
-		class="absolute bottom-4 left-4 bg-white/80 text-black dark:text-white dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001] text-lg font-bold border border-white dark:border-black backdrop-blur-sm pointer-events-none w-[250px] h-[80px] flex flex-col justify-start items-center text-center gap-1"
-	>
-		<div>Current Hint</div>
-		<div class="text-base font-normal">{highlightedCountry || ''}</div>
-	</div>
 </div>
 
 <!-- 		{#if submitted && trueAge !== null}
