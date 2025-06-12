@@ -5,7 +5,7 @@ function shuffle_array(array) {
   }
 }
 
-export function shuffle_years(min_year = -1000, max_year = 2024, max_rounds = 10) {
+export function shuffle_years_half(min_year, max_year, max_rounds) {
   // Group years by century
   const centuries = {};
   for (let i = min_year; i <= max_year; i += 1) {
@@ -41,6 +41,29 @@ export function shuffle_years(min_year = -1000, max_year = 2024, max_rounds = 10
     shuffle_array(all_years);
     years = years.concat(all_years.slice(0, max_rounds - years.length));
   }
+
+  return years;
+}
+
+export function shuffle_years(
+  min_year = -1000,
+  max_year = 2024,
+  max_rounds = 10,
+  bias_number = 4, // Number of years to bias towards the current century
+) {
+  let bias_year = max_year - 100;
+  let y1 = shuffle_years_half(min_year, bias_year, max_rounds - bias_number);
+
+  let y2 = [];
+  for (let i = 0; i < bias_number; i++) {
+    let year;
+    do {
+      year = Math.floor(Math.random() * (max_year - bias_year + 1)) + bias_year;
+    } while (y1.includes(year) || y2.includes(year)); // Avoid duplicates
+    y2.push(year);
+  }
+  
+  let years = y1.concat(y2);
 
   shuffle_array(years); // Final shuffle for randomness
 
