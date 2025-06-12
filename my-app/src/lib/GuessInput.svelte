@@ -84,7 +84,7 @@
                 bind:value={guess}
                 placeholder="Enter guess"
                 disabled={round > max_rounds}
-                style="min-width: 140px;"
+                style="max-width: 120px;"
                 on:keydown={async (e) => {
                     if (round > max_rounds) return;
 
