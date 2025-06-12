@@ -1,12 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
+  const API_HOST = import.meta.env.VITE_API_HOST;
 
 	let leaderboard = [];
 	let loading = true;
 	let error = null;
 
 	onMount(() => {
-		const eventSource = new EventSource('http://localhost:8000/api/leaderboard/stream/');
+		const eventSource = new EventSource(`${API_HOST}/api/leaderboard/stream/`);
 
 		eventSource.onmessage = (event) => {
 			try {
