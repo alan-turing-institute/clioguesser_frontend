@@ -22,7 +22,7 @@
 				[85, 180]
 			],
 			maxBoundsViscosity: 1.0 // Prevents panning outside bounds
-		}).setView([0, 0], 2);
+		}).setView([20, 0], 2); // Centered 20° north of the equator
 
 		map.createPane('borders');
 		map.getPane('borders').style.zIndex = '650';
