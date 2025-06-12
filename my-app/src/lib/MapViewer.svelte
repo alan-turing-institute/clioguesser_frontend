@@ -4,6 +4,15 @@
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
+	export let round: number;
+	export let max_rounds: number;
+	export let score: number;
+	export let min_year: number;
+	export let max_year: number;
+	export let submitted: boolean;
+	export let guessAge: string;
+	export let formatYear: (y: number) => string;
+
 	export let trueAge: number;
 	export let hint_penalty: number;
 	export let onHintUsed: (penalty: number) => void;
@@ -98,4 +107,46 @@
 	}
 </script>
 
-<div id="map" class="map-container"></div>
+<!-- <div id="map" class="map-container"></div> -->
+
+<div class="map-wrapper">
+	<div id="map" class="map-container"></div>
+	<div
+		class="bg-white/60 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
+	>
+		<div class="text-red-400 text-xl font-bold">Round {round}/{max_rounds}</div>
+		<div class="text-white text-xl">
+			<span class="font-bold">Current score:</span>
+			<span class="font-normal ml-1">{score}</span>
+		</div>
+	</div>
+	{#if submitted}
+		<div
+			class="absolute top-2 left-15 transform
+	       bg-white/60 dark:bg-black/60 text-black dark:text-white
+	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
+		>
+			<div class="text-red-400 text-xl font-bold">You guessed {guessAge}</div>
+			<div class="text-red-400 text-xl font-bold">
+				You were off by {Math.abs(Number(guessAge) - trueAge)} years
+			</div>
+		</div>
+	{/if}
+</div>
+
+<!-- 		{#if submitted && trueAge !== null}
+			<p>The actual year of the map is {formatYear(trueAge)}.</p>
+			<p>
+				{#if guessAge == String(trueAge)}
+					<span class="correct">Correct! Very impressive</span>
+				{:else if Math.abs(Number(guessAge) - trueAge) < 50}
+					<span class="incorrect"
+						>Nearly! You were off by {Math.abs(Number(guessAge) - trueAge)} years.</span
+					>
+				{:else}
+					<span class="incorrect"
+						>Incorrect! You were off by {Math.abs(Number(guessAge) - trueAge)} years.</span
+					>
+				{/if}
+			</p>
+		{/if} -->
