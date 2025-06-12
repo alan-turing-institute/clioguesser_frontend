@@ -116,14 +116,14 @@
                 }}
             />
             <button
-                class="era-switch"
-                type="button"
-                aria-label="Switch CE/BCE"
-                on:click={() => era = era === 'CE' ? 'BCE' : 'CE'}
-                disabled={round > max_rounds}
-            >
-                {era}
-            </button>
+				class="era-switch"
+				type="button"
+				aria-label="Switch CE/BCE"
+				on:click={() => era = era === 'CE' ? 'BCE' : 'CE'}
+				disabled={round > max_rounds}
+			>
+				{era}
+			</button>
         </div>
     {/if}
 
@@ -263,5 +263,23 @@
         margin-left: auto;
         line-height: 1;
         padding: 0 0.25rem;
+    }
+	.era-switch {
+        background: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        padding: 0.25rem 0.75rem;
+        cursor: pointer;
+        color: #333;
+        font-weight: 600;
+        transition: background 0.15s;
+        min-width: 60px; /* Ensures consistent width for both 'CE' and 'BCE' */
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .era-switch:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>
