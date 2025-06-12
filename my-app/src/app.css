@@ -159,7 +159,6 @@ body,
   pointer-events: none;
   background-opacity: 0.8;
   /* Ensures map is still clickable underneath */
-} */
 
 .footer {
   text-align: center;
