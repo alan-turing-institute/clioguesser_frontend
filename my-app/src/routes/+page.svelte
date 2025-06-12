@@ -181,6 +181,7 @@
 		{max_year}
 		{submitted}
 		{guessAge}
+		{showIntroHelp}
 		{formatYear}
 		{era}
 		on:hintPenaltyUpdate={(e) => {

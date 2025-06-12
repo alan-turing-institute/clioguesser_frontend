@@ -11,6 +11,7 @@
 	export let max_year: number;
 	export let submitted: boolean;
 	export let guessAge: string;
+	export let showIntroHelp: boolean;
 	export let formatYear: (y: number) => string;
 
 	export let trueAge: number;
@@ -131,34 +132,36 @@
 
 <div class="map-wrapper">
 	<div id="map" class="map-container"></div>
-	<div
-		class="bg-white/80 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
-	>
-		<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
-		<div class="text-black dark:text-white text-xl">
-			<span class="font-bold">Current score:</span>
-			<span class="font-normal ml-1">{formatScore(score)}</span>
-		</div>
-	</div>
-	{#if submitted}
+	{#if showIntroHelp === false}
 		<div
-			class="absolute top-2 left-15 transform
+			class="bg-white/80 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
+		>
+			<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
+			<div class="text-black dark:text-white text-xl">
+				<span class="font-bold">Current score:</span>
+				<span class="font-normal ml-1">{formatScore(score)}</span>
+			</div>
+		</div>
+		{#if submitted}
+			<div
+				class="absolute top-2 left-15 transform
 	       bg-white/80 dark:bg-black/60 text-black dark:text-white
 	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
-		>
-			<div class="text-red-600 text-xl font-bold">
-				You guessed {guessAge}
-				{era}
-			</div>
+			>
+				<div class="text-red-600 text-xl font-bold">
+					You guessed {guessAge}
+					{era}
+				</div>
 
-			<div class="text-red-600 text-xl font-bold">
-				The true year was {formatEraAdjustedYear(trueAge)}
-			</div>
+				<div class="text-red-600 text-xl font-bold">
+					The true year was {formatEraAdjustedYear(trueAge)}
+				</div>
 
-			<div class="text-red-600 text-xl font-bold">
-				You were off by {errorMargin} years
+				<div class="text-red-600 text-xl font-bold">
+					You were off by {errorMargin} years
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/if}
 </div>
 
