@@ -17,7 +17,6 @@
 {#if show}
   <div class="modal-backdrop">
     <div class="modal-content">
-      <h2 class="text-xl font-bold mb-2">Game Over</h2>
       <p>Your final score is <strong>{score}</strong> points.</p>
 
       <div class="mt-4">
