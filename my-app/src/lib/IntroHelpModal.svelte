@@ -26,36 +26,21 @@
 </script>
 
 {#if show}
-	<div
-		class="modal-backdrop bg-white dark:bg-black bg-opacity-90 fixed inset-0 z-[1000] flex items-center justify-center"
-	>
-		<div
-			class="flex flex-col items-center text-center
-		       p-8 sm:p-10 rounded-[30px] shadow-2xl z-[1001] max-w-[90vw] w-[600px]
-		       bg-[var(--color-card-bg)] border border-black dark:border-gray-800"
-			role="dialog"
-			aria-modal="true"
-			aria-label="How to Play"
-		>
-			<h2 class="text-black dark:text-white font-bold text-4xl mb-6">Welcome to Clioguesser</h2>
-
-			<ul class="text-black dark:text-white space-y-4 mb-8">
-				<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
-				<li>Use the polity outlines to guess the age of the map.</li>
-				<li>Submit your guess to see how close you are.</li>
-				<li>You can use hints if you get stuck, but each hint reduces your score!</li>
-				<li>To use a hint, click on a polity to show the name.</li>
-			</ul>
-
-			<button
-				class="!bg-black/60 dark:!bg-black/40 hover:!bg-gray-800 !text-white font-bold py-2 px-6 rounded"
-				on:click={closeModal}
-				aria-label="Close"
-			>
-				Play game
-			</button>
-		</div>
-	</div>
+    <div class="modal-backdrop">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-label="How to Play">
+            <h2>Welcome to Clioguesser</h2>
+                <ul>
+                    <li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
+                    <li>Use the polity outlines to guess the age of the map.</li>
+                    <li>Submit your guess to see how close you are.</li>
+                    <li>You can use hints if you get stuck, but each hint reduces your score!</li>
+                    <li>To use a hint, click on a polity to show the name.</li>
+                </ul>
+            <button class="close-btn" on:click={closeModal} aria-label="Close">Play game</button>
+            
+        </div>
+    </div>
+     
 {/if}
 
 <style>
