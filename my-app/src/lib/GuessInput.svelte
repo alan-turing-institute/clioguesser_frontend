@@ -165,7 +165,7 @@
 		</Button>
     {:else}
         <Button
-            class="primary sm"
+            class="primary sm next-btn"
             disabled={round > max_rounds}
             on:click={async () => {
                 setSubmitted(false);
