@@ -5,7 +5,7 @@
 	import GameOverModal from '$lib/GameOverModal.svelte';
 	import MapViewer from '$lib/MapViewer.svelte';
 	import GameHeader from '$lib/GameHeader.svelte';
-	// import IntroHelp from '$lib/IntroHelpModal.svelte';
+	import IntroHelpModal  from '$lib/IntroHelpModal.svelte';
 	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
 	let guess = '';
@@ -24,6 +24,7 @@
 	let initialsError = '';
 	let inputError = '';
 	let hint_penalty: number = 100.0;
+	let showIntroHelp = true;
 
 	onMount(() => {
 		// restore from sessionStorage
@@ -93,11 +94,15 @@
 	<GameHeader {round} {max_rounds} {score} {min_year} {max_year} {submitted} {guessAge} {trueAge} />
 
 	<div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
-		<button class="help-btn" style="font-size: 2rem; padding: 1rem 1.5rem;" on:click={() => (showIntroHelp = true)}>
+		<button class="help-btn" style="font-size: 2rem; padding: 1rem 1.5rem;" on:click={() => showIntroHelp = true}>
 			<span role="img" aria-label="Help">❓</span>
 		</button>
 	</div>
-
+	<IntroHelpModal
+		show={showIntroHelp}
+		on:close={() => (showIntroHelp = false)}
+	/>
+	
 	<GuessInput
 		{guess}
 		{round}
@@ -122,10 +127,6 @@
 		setTrueAges={(val) => (trueAges = val)}
 	/>
 
-	<!-- <IntroHelp
-		show={showIntroHelp}
-		on:close={() => (showIntroHelp = false)}
-	/> -->
 	
 	<GameOverModal
 		show={round > max_rounds}
