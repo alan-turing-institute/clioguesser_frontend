@@ -54,12 +54,12 @@
 	function guess_errors(guess, min_year, max_year) {
 		const n = getEraAdjustedGuess(guess, era);
 		if (isNaN(n) || guess.trim() === '' || !Number.isInteger(Number(guess))) {
-			setInputError('Please enter a valid year.');
+			setInputError('Please enter a valid year');
 			return true;
 		}
 		if (n < min_year || n > max_year) {
 			setInputError(
-				`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`
+				`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}`
 			);
 			return true;
 		}
@@ -188,6 +188,7 @@
 			>
 		</div>
 	{/if}
+	
 	{#if !submitted}
 		<span class="centre-label" class:pop-effect={popHint}>
 			Hint modifier: {Math.round(hint_penalty)}%
@@ -243,15 +244,13 @@
 	}
 	.popup-error {
 		position: fixed;
-		top: 2rem;
-		left: 50%;
-		transform: translateX(-50%);
+		top: 4rem;
 		background: #fff;
 		color: #e63946;
 		border: 1px solid #e63946;
 		border-radius: 8px;
 		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-		padding: 1rem 2.5rem 1rem 1.25rem;
+		padding: 1rem 2rem 1rem 2rem;
 		z-index: 1000;
 		display: flex;
 		align-items: center;
@@ -259,7 +258,7 @@
 		font-size: 1.1rem;
 		min-width: 260px;
 		max-width: 90vw;
-		animation: pop 0.5s cubic-bezier(0.36, 2, 0.6, 0.99);
+		animation: pop 0.5s cubic-bezier(0.5, 1.5, 0.5, 0.99);
 	}
 	.close-btn {
 		background: none;
