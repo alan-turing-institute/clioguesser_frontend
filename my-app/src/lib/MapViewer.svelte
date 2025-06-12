@@ -25,15 +25,20 @@
 		L = await import('leaflet');
 
 		map = L.map('map', {
-			crs: L.CRS.EPSG3857
-		}).setView([0, 0], 2);
+			crs: L.CRS.EPSG3857,
+			maxBounds: [
+				[-85, -180],
+				[85, 180]
+			],
+			maxBoundsViscosity: 1.0 // Prevents panning outside bounds
+		}).setView([20, 0], 2); // Centered 20° north of the equator
 
 		map.createPane('borders');
 		map.getPane('borders').style.zIndex = '650';
 
 		L.tileLayer(
 			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-			{ maxZoom: 10, minZoom: 1 }
+			{ maxZoom: 10, minZoom: 2 }
 		).addTo(map);
 
 		await renderMap(); // initial load
