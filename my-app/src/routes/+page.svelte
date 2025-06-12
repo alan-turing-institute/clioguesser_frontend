@@ -85,35 +85,53 @@
 	}
 </script>
 
-<div class="container">
+<div class="container relative">
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
-	<GameHeader {round} {max_rounds} {score} {min_year} {max_year} {submitted} {guessAge} {trueAge} />
 
-	<GuessInput
-		{guess}
-		{round}
-		{max_rounds}
-		{min_year}
-		{max_year}
-		{submitted}
-		{inputError}
-		{hint_penalty}
-		{guessAge}
-		{trueAge}
-		{trueAges}
-		{getScore}
-		{resetGame}
-		setGuess={(val) => (guess = val)}
-		setGuessAge={(val) => (guessAge = val)}
-		setInputError={(val) => (inputError = val)}
-		setSubmitted={(val) => (submitted = val)}
-		setHintPenalty={(val) => (hint_penalty = val)}
-		setRound={(val) => (round = val)}
-		setTrueAge={(val) => (trueAge = val)}
-		setTrueAges={(val) => (trueAges = val)}
-	/>
+	<!-- Wrap header + input in a fixed-gap column -->
+	<div class="flex flex-col gap-4 items-center">
+		<div class="flex-none">
+			<GameHeader
+				{round}
+				{max_rounds}
+				{score}
+				{min_year}
+				{max_year}
+				{submitted}
+				{guessAge}
+				{trueAge}
+			/>
+		</div>
+
+		<!-- Fixed height or min-height to prevent shifting -->
+		<div class="flex items-center gap-4 justify-center w-full">
+			<GuessInput
+				{guess}
+				{round}
+				{max_rounds}
+				{min_year}
+				{max_year}
+				{submitted}
+				{inputError}
+				{hint_penalty}
+				{guessAge}
+				{trueAge}
+				{trueAges}
+				{getScore}
+				{resetGame}
+				setGuess={(val) => (guess = val)}
+				setGuessAge={(val) => (guessAge = val)}
+				setInputError={(val) => (inputError = val)}
+				setSubmitted={(val) => (submitted = val)}
+				setHintPenalty={(val) => (hint_penalty = val)}
+				setRound={(val) => (round = val)}
+				setTrueAge={(val) => (trueAge = val)}
+				setTrueAges={(val) => (trueAges = val)}
+			/>
+		</div>
+	</div>
 
 	<GameOverModal
 		show={round > max_rounds}
@@ -125,14 +143,25 @@
 		submitLeaderboard={handleSubmitLeaderboard}
 		{resetGame}
 	/>
+
 	<MapViewer
 		{trueAge}
 		{hint_penalty}
+		{round}
+		{max_rounds}
+		{score}
+		{min_year}
+		{max_year}
+		{submitted}
+		{guessAge}
+		{formatYear}
 		on:hintPenaltyUpdate={(e) => {
 			hint_penalty = e.detail;
 			sessionStorage.setItem('hint_penalty', String(hint_penalty));
 		}}
 	/>
 
-	Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
+	<p class="text-center mt-4 text-sm text-gray-400">
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
+	</p>
 </div>

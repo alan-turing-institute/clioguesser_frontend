@@ -69,13 +69,14 @@
     $: inputDisabled = submitted;
 </script>
 
-<div class="left-align">
+<div class="flex items-center gap-4 justify-center w-full h-16">
 
     {#if !submitted || round > max_rounds}
-        <span class="centre-label">Year:</span>
+        <span class="text-sm">Year:</span>
         <div class="input-era-row">
             <input
                 id="guess-input"
+				class="border rounded px-2 py-1 text-black"
                 bind:value={guess}
                 placeholder="Enter guess"
                 disabled={round > max_rounds}
