@@ -31,15 +31,16 @@
     <div class="modal-backdrop">
         <div class="modal-content" role="dialog" aria-modal="true" aria-label="How to Play">
             <h2>Welcome to Clioguesser</h2>
-                <ul>
-                    <li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
-                    <li>Use the polity outlines to guess the age of the map.</li>
-                    <li>Submit your guess to see how close you are.</li>
-                    <li>You can use hints if you get stuck, but each hint reduces your score!</li>
-                    <li>To use a hint, click on a polity to show the name.</li>
-                </ul>
-            <button class="close-btn" on:click={closeModal} aria-label="Close">Play game</button>
-            
+            <button class="close-btn" on:click={closeModal} aria-label="Close">
+                <span class="font-bold text-green-600">Play game</span>
+            </button>
+            <ul>
+                <li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
+                <li>Use the polity outlines to guess the age of the map.</li>
+                <li>Submit your guess to see how close you are.</li>
+                <li>Hints: click polities to show their names.</li>
+                <li><span class="font-bold text-red-600">WARNING</span>: each hint reduces your score!</li>
+            </ul>
         </div>
     </div>
      
