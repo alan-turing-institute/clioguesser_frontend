@@ -29,7 +29,7 @@
 	let finished = false;
 
 	let era: 'CE' | 'BCE' = 'CE';
-
+	$: showIntroHelp;
 	function setEra(val: 'CE' | 'BCE') {
 		era = val;
 	}
@@ -179,6 +179,7 @@
 	/>
 
 	<MapViewer
+		bind:showIntroHelp
 		{trueAge}
 		{hint_penalty}
 		{round}

@@ -134,7 +134,7 @@
 	<div id="map" class="map-container"></div>
 	{#if showIntroHelp === false}
 		<div
-			class="bg-white/80 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
+			class="bg-white/10 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
 		>
 			<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
 			<div class="text-black dark:text-white text-xl">
