@@ -83,7 +83,7 @@
 		}
 
 		Object.values(groups).forEach((group) => {
-			let wasClicked = false;
+			group.wasClicked = false; // Add a custom flag to the group
 
 			group.eachLayer((layer) => {
 				layer.options.pane = 'borders';
@@ -91,7 +91,7 @@
 				layer.on('mouseover', () => {
 					group.eachLayer((l) => l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 }));
 
-					if (wasClicked) {
+					if (group.wasClicked) {
 						highlightedCountry = group.the_name;
 					} else {
 						highlightedCountry = null;
@@ -99,8 +99,11 @@
 				});
 
 				layer.on('mouseup', () => {
+					if (group.wasClicked) return; // Only allow first click
+
+					group.wasClicked = true;
 					highlightedCountry = group.the_name;
-					wasClicked = true;
+
 					const newPenalty = hint_penalty * 0.95;
 					dispatch('hintPenaltyUpdate', newPenalty);
 				});
@@ -166,7 +169,7 @@
 		<div
 			class="
 				absolute bottom-4 left-4 bg-white/80 text-black dark:text-white
-				dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001] 
+				dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001]
 			    text-lg font-bold border border-white dark:border-black backdrop-blur-sm
 				pointer-events-none w-[250px] h-[100px] flex flex-col justify-start
 				items-center text-center gap-1"
