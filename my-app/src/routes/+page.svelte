@@ -98,9 +98,12 @@
 			<span role="img" aria-label="Help">❓</span>
 		</button>
 	</div>
+
 	<IntroHelpModal
 		show={showIntroHelp}
 		on:close={() => (showIntroHelp = false)}
+		{min_year}
+		{max_year}
 	/>
 	
 	<GuessInput
@@ -127,7 +130,6 @@
 		setTrueAges={(val) => (trueAges = val)}
 	/>
 
-	
 	<GameOverModal
 		show={round > max_rounds}
 		{score}
