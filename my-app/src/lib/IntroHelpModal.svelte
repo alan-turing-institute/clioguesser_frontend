@@ -26,18 +26,36 @@
 </script>
 
 {#if show}
-	<div class="modal-backdrop">
-		<div class="modal-content" role="dialog" aria-modal="true" aria-label="How to Play">
-			<h2>Welcome to Clioguesser</h2>
-			<ul>
-				<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
-				<li>Use the polity outlines to guess the age of the map.</li>
-				<li>Submit your guess to see how close you are.</li>
-				<li>Hints: click polities to show their names.</li>
-				<li><span class="font-bold text-red-600">WARNING</span>: each hint reduces your score!</li>
-			</ul>
-			<button class="close-btn" on:click={closeModal} aria-label="Close">Play game</button>
-		</div>
+	<div
+		class="modal-backdrop bg-white dark:bg-black bg-opacity-90 fixed inset-0 z-[1000] flex items-center justify-center"
+	>
+		<div
+	class="flex flex-col items-center text-center
+	       p-4 sm:p-6 rounded-[30px] shadow-2xl z-[1001] max-w-[80vw] w-[600px]
+	       bg-[var(--color-card-bg)] border border-black dark:border-gray-800"
+	role="dialog"
+	aria-modal="true"
+	aria-label="How to Play"
+>
+	<h2 class="text-black dark:text-white font-bold text-4xl mb-4">Welcome to Clioguesser</h2>
+
+	<ul class="text-black dark:text-white space-y-1 leading-tight mb-4">
+		<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
+		<li>Use the polity outlines to guess the age of the map.</li>
+		<li>Submit your guess to see how close you are.</li>
+		<li>You can use hints if you get stuck, but each hint reduces your score!</li>
+		<li><span class="font-bold text-red-600">WARNING</span>: each hint reduces your score!</li>
+	</ul>
+
+	<button
+		class="!bg-black/60 dark:!bg-black/40 hover:!bg-gray-800 !text-white font-bold py-2 px-6 rounded"
+		on:click={closeModal}
+		aria-label="Close"
+	>
+		Play game
+	</button>
+</div>
+
 	</div>
 {/if}
 
