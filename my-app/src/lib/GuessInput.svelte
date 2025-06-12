@@ -13,7 +13,6 @@
 	export let trueAges: number[];
 	export let L: any;
 	export let finished: boolean;
-	export let guessInputKey: number;
 
 	export let getScore: () => Promise<void>;
 	export let updateMap: (L: any) => Promise<void>;
@@ -34,10 +33,6 @@
 
 	export let era: 'CE' | 'BCE';
 	export let setEra: (val: 'CE' | 'BCE') => void;
-	let localGuess = guess;
-	$: if (guessInputKey !== undefined) {
-		localGuess = ''; // Reset input value on new key
-	}
 	let popHint = false;
 
 	$: if (hint_penalty !== undefined) {
@@ -50,6 +45,7 @@
 
 	// Update guess_errors and input handling to use era
 	function getEraAdjustedGuess(guess: string, era: 'CE' | 'BCE') {
+		console.log(`Adjusting guess: ${guess} for era: ${era}`);
 		let n = Number(guess);
 		if (era === 'BCE' && !isNaN(n)) n = -Math.abs(n);
 		if (era === 'CE' && !isNaN(n)) n = Math.abs(n);
@@ -82,7 +78,7 @@
 			<input
 				id="guess-input"
 				class="border rounded px-2 py-1 text-black"
-				bind:value={localGuess}
+				bind:value={guess}
 				placeholder="Enter guess"
 				disabled={round > max_rounds}
 				style="max-width: 120px;"
@@ -94,7 +90,7 @@
 						setInputError('');
 
 						if (!submitted) {
-							let ge = guess_errors(localGuess, min_year, max_year);
+							let ge = guess_errors(guess, min_year, max_year);
 							if (ge) return;
 							// Use era-adjusted guess
 							setGuessAge(String(getEraAdjustedGuess(guess, era)));
@@ -102,7 +98,6 @@
 							setHintPenalty(100.0);
 							sessionStorage.setItem('hint_penalty', '100.0');
 							setSubmitted(true);
-							guessInputKey += 1;
 						} else if (submitted && round < max_rounds) {
 							setSubmitted(false);
 							setRound(round + 1);
@@ -112,12 +107,11 @@
 							setTrueAge(next);
 							sessionStorage.setItem('trueAge', String(next));
 							await updateMap(L);
-							setGuess(localGuess);
-							guessInputKey += 1;
+							setGuess('');
+							setGuessAge('');
 						} else if (submitted && round >= max_rounds) {
 							setSubmitted(false);
 							setRound(round + 1);
-							guessInputKey += 1;
 							sessionStorage.setItem('round', (round + 1).toString());
 						}
 					}
@@ -141,16 +135,14 @@
 			disabled={round > max_rounds}
 			on:click={async () => {
 				setInputError('');
-				let ge = guess_errors(localGuess, min_year, max_year);
+				let ge = guess_errors(guess, min_year, max_year);
 				if (ge) return;
-				setGuessAge('');
+				setGuessAge(String(getEraAdjustedGuess(guess, era)));
 				await getScore();
 				setHintPenalty(100.0);
 				sessionStorage.setItem('hint_penalty', '100.0');
 				setSubmitted(true);
 				setEra('CE'); // Reset era to CE after submission
-				setGuess(localGuess);
-				guessInputKey += 1;
 			}}
 		>
 			Submit
@@ -168,9 +160,8 @@
 				setTrueAge(next);
 				sessionStorage.setItem('trueAge', String(next));
 				await updateMap(L);
-				setGuess(localGuess);
+				setGuess('');
 				setGuessAge('');
-				guessInputKey += 1;
 			}}
 		>
 			Next
