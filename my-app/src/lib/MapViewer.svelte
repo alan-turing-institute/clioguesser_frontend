@@ -25,20 +25,15 @@
 		L = await import('leaflet');
 
 		map = L.map('map', {
-			crs: L.CRS.EPSG3857,
-			maxBounds: [
-				[-85, -180],
-				[85, 180]
-			],
-			maxBoundsViscosity: 1.0 // Prevents panning outside bounds
-		}).setView([20, 0], 2); // Centered 20° north of the equator
+			crs: L.CRS.EPSG3857
+		}).setView([0, 0], 2);
 
 		map.createPane('borders');
 		map.getPane('borders').style.zIndex = '650';
 
 		L.tileLayer(
 			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-			{ maxZoom: 10, minZoom: 2 }
+			{ maxZoom: 10, minZoom: 1 }
 		).addTo(map);
 
 		await renderMap(); // initial load
@@ -129,7 +124,7 @@
 		<div
 			class="absolute top-2 left-15 transform
 	       bg-white/60 dark:bg-black/60 text-black dark:text-white
-	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
+	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none	"
 		>
 			<div class="text-red-400 text-xl font-bold">You guessed {guessAge}</div>
 			<div class="text-red-400 text-xl font-bold">
