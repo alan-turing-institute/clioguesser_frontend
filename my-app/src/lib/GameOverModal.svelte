@@ -44,6 +44,7 @@
 					<Button
 						class="primary sm"
 						on:click={async () => {
+              resetGame();
 							await goto('/leaderboard');
 						}}
 					>

@@ -133,7 +133,7 @@
 		</div>
 
 		<!-- Fixed height or min-height to prevent shifting -->
-		{#key guessInputKey}
+		{#key round}
 			<div class="flex items-center gap-4 justify-center w-full">
 				<GuessInput
 					{guess}
