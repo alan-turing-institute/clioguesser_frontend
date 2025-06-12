@@ -5,6 +5,7 @@
 	import GameOverModal from '$lib/GameOverModal.svelte';
 	import MapViewer from '$lib/MapViewer.svelte';
 	import GameHeader from '$lib/GameHeader.svelte';
+	import IntroHelp from '$lib/IntroHelp.svelte';
 	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
 	let guess = '';
@@ -115,6 +116,10 @@
 		setTrueAges={(val) => (trueAges = val)}
 	/>
 
+	<IntroHelp
+		showOnMount={true}
+	/>
+	
 	<GameOverModal
 		show={round > max_rounds}
 		{score}
