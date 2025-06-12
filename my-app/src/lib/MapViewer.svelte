@@ -158,8 +158,7 @@
 	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
 			>
 				<div class="text-red-600 text-xl font-bold">
-					You guessed {guessAge}
-					{era}
+					You guessed {formatEraAdjustedYear(guessAge)}
 				</div>
 
 				<div class="text-red-600 text-xl font-bold">

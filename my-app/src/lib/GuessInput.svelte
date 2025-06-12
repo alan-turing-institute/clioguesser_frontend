@@ -142,7 +142,6 @@
 				setHintPenalty(100.0);
 				sessionStorage.setItem('hint_penalty', '100.0');
 				setSubmitted(true);
-				setEra('CE'); // Reset era to CE after submission
 			}}
 		>
 			Submit
@@ -162,6 +161,7 @@
 				await updateMap(L);
 				setGuess('');
 				setGuessAge('');
+				setEra('CE'); // Reset era to CE after submission
 			}}
 		>
 			Next
