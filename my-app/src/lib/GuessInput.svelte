@@ -128,41 +128,41 @@
     {/if}
 
     {#if submitted === false}
-        <Button
-            class="primary sm"
-            disabled={round > max_rounds}
-            on:click={async () => {
-                setInputError('');
-                let ge = guess_errors(guess, min_year, max_year);
-                if (ge) return;
-                setGuessAge(guess);
-                await getScore();
-                setHintPenalty(100.0);
-                sessionStorage.setItem('hint_penalty', '100.0');
-                setSubmitted(true);
-            }}
-        >
-            Submit
-        </Button>
+		<Button
+			class="primary sm submit-btn"
+			disabled={round > max_rounds}
+			on:click={async () => {
+				setInputError('');
+				let ge = guess_errors(guess, min_year, max_year);
+				if (ge) return;
+				setGuessAge(guess);
+				await getScore();
+				setHintPenalty(100.0);
+				sessionStorage.setItem('hint_penalty', '100.0');
+				setSubmitted(true);
+			}}
+		>
+			Submit
+		</Button>
     {:else if round < max_rounds}
-        <Button
-            class="primary sm"
-            disabled={round > max_rounds}
-            on:click={async () => {
-                setSubmitted(false);
-                setRound(round + 1);
-                sessionStorage.setItem('round', (round + 1).toString());
-                const next = trueAges.shift();
-                setTrueAges([...trueAges]);
-                setTrueAge(next);
-                sessionStorage.setItem('trueAge', String(next));
-                await updateMap(L);
-                setGuess('');
-                setGuessAge('');
-            }}
-        >
-            Next
-        </Button>
+		<Button
+			class="primary sm next-btn"
+			disabled={round > max_rounds}
+			on:click={async () => {
+				setSubmitted(false);
+				setRound(round + 1);
+				sessionStorage.setItem('round', (round + 1).toString());
+				const next = trueAges.shift();
+				setTrueAges([...trueAges]);
+				setTrueAge(next);
+				sessionStorage.setItem('trueAge', String(next));
+				await updateMap(L);
+				setGuess('');
+				setGuessAge('');
+			}}
+		>
+			Next
+		</Button>
     {:else}
         <Button
             class="primary sm"
@@ -285,7 +285,15 @@
         min-width: 140px;
         text-align: center;
         box-sizing: border-box;
-        color: #e63946 !important; /* Use !important to override inline/component styles */
+        color: #e63946 !important; /* Red */
+        font-weight: bold;
+    }
+    :global(.submit-btn),
+    :global(.next-btn) {
+        min-width: 140px;
+        text-align: center;
+        box-sizing: border-box;
+        color: #2ca02c !important; /* Green */
         font-weight: bold;
     }
 </style>
