@@ -91,8 +91,7 @@
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
-	<GameHeader {round} {max_rounds} {score} {min_year} {max_year} {submitted} {guessAge} {trueAge} />
-
+	
 	<div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
 		<button class="help-btn" style="font-size: 2rem; padding: 1rem 1.5rem;" on:click={() => showIntroHelp = true}>
 			<span role="img" aria-label="Help">❓</span>
@@ -106,6 +105,8 @@
 		{max_year}
 	/>
 	
+	<GameHeader {round} {max_rounds} {score} {min_year} {max_year} {submitted} {guessAge} {trueAge} />
+
 	<GuessInput
 		{guess}
 		{round}
