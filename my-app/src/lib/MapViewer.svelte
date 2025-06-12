@@ -14,6 +14,8 @@
 	export let showIntroHelp: boolean;
 	export let formatYear: (y: number) => string;
 
+	let highlightedCountry: string | null = null;
+
 	export let trueAge: number;
 	export let hint_penalty: number;
 	export let onHintUsed: (penalty: number) => void;
@@ -81,26 +83,33 @@
 		}
 
 		Object.values(groups).forEach((group) => {
+			let wasClicked = false;
+
 			group.eachLayer((layer) => {
 				layer.options.pane = 'borders';
 
 				layer.on('mouseover', () => {
 					group.eachLayer((l) => l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 }));
+
+					if (wasClicked) {
+						highlightedCountry = group.the_name;
+					} else {
+						highlightedCountry = null;
+					}
 				});
 
-				layer.on('mouseup', (event) => {
-					if (!layer._tooltip) {
-						layer
-							.bindTooltip(group.the_name, {
-								permanent: false,
-								direction: 'top',
-								className: 'custom-tooltip'
-							})
-							.openTooltip(event.latlng);
+				layer.on('mouseup', () => {
+					highlightedCountry = group.the_name;
+					wasClicked = true;
 
-						const newPenalty = hint_penalty * 0.95;
-						dispatch('hintPenaltyUpdate', newPenalty);
-					}
+					clearTimeout(fadeTimeout);
+					fadeTimeout = setTimeout(() => {
+						highlightedCountry = null;
+						wasClicked = false;
+					}, 3000); // hide after 3 seconds
+
+					const newPenalty = hint_penalty * 0.95;
+					dispatch('hintPenaltyUpdate', newPenalty);
 				});
 
 				layer.on('mouseout', () => {
@@ -162,6 +171,22 @@
 				</div>
 			</div>
 		{/if}
+		<div
+			class="
+				absolute bottom-4 left-4 bg-white/80 text-black dark:text-white
+				dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001] 
+			    text-lg font-bold border border-white dark:border-black backdrop-blur-sm
+				pointer-events-none w-[250px] h-[100px] flex flex-col justify-start
+				items-center text-center gap-1"
+		>
+			<div class="text-base font-semibold">Current Hint</div>
+			<div
+				class="w-full text-center font-normal leading-tight whitespace-pre-wrap break-words"
+				style="font-size: clamp(0.75rem, 3.5vw, 1.125rem); line-height: 1.1;"
+			>
+				{highlightedCountry || ''}
+			</div>
+		</div>
 	{/if}
 </div>
 
