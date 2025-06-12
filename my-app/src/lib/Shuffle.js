@@ -49,9 +49,10 @@ export function shuffle_years(
   min_year = -1000,
   max_year = 2024,
   max_rounds = 10,
+  recent_times = 200, // Number of years to consider as recent times
   bias_number = 4, // Number of years to bias towards the current century
 ) {
-  let bias_year = max_year - 100;
+  let bias_year = max_year - recent_times;
   let y1 = shuffle_years_half(min_year, bias_year, max_rounds - bias_number);
 
   let y2 = [];
