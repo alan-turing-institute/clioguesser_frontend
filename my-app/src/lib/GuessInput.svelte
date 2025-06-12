@@ -169,10 +169,11 @@
     </Button>
 
     {#if inputError}
-        <div class="text-red-500 text mt-1">
-            <span style="color: red;">{inputError}</span>
-        </div>
-    {/if}
+		<div class="popup-error">
+			<span>{inputError}</span>
+			<button class="close-btn" on:click={() => setInputError('')} aria-label="Close">&times;</button>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -213,5 +214,36 @@
             transform: scale(1);
             opacity: 1;
         }
+    }
+	.popup-error {
+        position: fixed;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        color: #e63946;
+        border: 1px solid #e63946;
+        border-radius: 8px;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+        padding: 1rem 2.5rem 1rem 1.25rem;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.1rem;
+        min-width: 260px;
+        max-width: 90vw;
+        animation: pop 0.5s cubic-bezier(.36,2,.6,.99);
+    }
+    .close-btn {
+        background: none;
+        border: none;
+        color: #e63946;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: auto;
+        line-height: 1;
+        padding: 0 0.25rem;
     }
 </style>
