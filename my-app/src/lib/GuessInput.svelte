@@ -177,15 +177,6 @@
         </Button>
     {/if}
 
-    <Button
-        class="secondary sm"
-        on:click={async () => {
-            await resetGame();
-        }}
-    >
-        Restart game
-    </Button>
-
     {#if inputError}
 		<div class="popup-error">
 			<span>{inputError}</span>
@@ -195,6 +186,14 @@
 	<span class="centre-label" class:pop-effect={popHint}>
 		Hint modifier: {Math.round(hint_penalty)}%
 	</span>
+	<Button
+		class="secondary sm restart-btn"
+		on:click={async () => {
+			await resetGame();
+		}}
+	>
+		Restart game
+	</Button>
 </div>
 
 <style>
@@ -281,5 +280,12 @@
     .era-switch:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+    }
+	:global(.restart-btn) {
+        min-width: 140px;
+        text-align: center;
+        box-sizing: border-box;
+        color: #e63946 !important; /* Use !important to override inline/component styles */
+        font-weight: bold;
     }
 </style>
