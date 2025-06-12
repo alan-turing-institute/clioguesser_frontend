@@ -101,13 +101,6 @@
 				layer.on('mouseup', () => {
 					highlightedCountry = group.the_name;
 					wasClicked = true;
-
-					clearTimeout(fadeTimeout);
-					fadeTimeout = setTimeout(() => {
-						highlightedCountry = null;
-						wasClicked = false;
-					}, 3000); // hide after 3 seconds
-
 					const newPenalty = hint_penalty * 0.95;
 					dispatch('hintPenaltyUpdate', newPenalty);
 				});

@@ -29,6 +29,7 @@
 
 	let era: 'CE' | 'BCE' = 'CE';
 	$: showIntroHelp;
+	$: console.log(`Current hint penalty: ${hint_penalty}`);
 	function setEra(val: 'CE' | 'BCE') {
 		era = val;
 	}
