@@ -38,21 +38,32 @@
         }, 0);
     }
 
-	function guess_errors(guess, min_year, max_year) {
-		if (
-			isNaN(Number(guess)) ||
-			guess.trim() === '' ||
-			!Number.isInteger(Number(guess))
-		) {
-			setInputError('Please enter a valid year.');
-			return true;
-		}
-		if (Number(guess) < min_year || Number(guess) > max_year) {
-			setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
-			return true;
-		}
-		return false;
-	}
+	let era: 'CE' | 'BCE' = 'CE';
+
+    // Update guess_errors and input handling to use era
+    function getEraAdjustedGuess(guess: string, era: 'CE' | 'BCE') {
+        let n = Number(guess);
+        if (era === 'BCE' && !isNaN(n)) n = -Math.abs(n);
+        if (era === 'CE' && !isNaN(n)) n = Math.abs(n);
+        return n;
+    }
+
+    function guess_errors(guess, min_year, max_year) {
+        const n = getEraAdjustedGuess(guess, era);
+        if (
+            isNaN(n) ||
+            guess.trim() === '' ||
+            !Number.isInteger(Number(guess))
+        ) {
+            setInputError('Please enter a valid year.');
+            return true;
+        }
+        if (n < min_year || n > max_year) {
+            setInputError(`Please enter a year between ${formatYear(min_year)} and ${formatYear(max_year)}.`);
+            return true;
+        }
+        return false;
+    }
 
 	let inputDisabled = false;
     $: inputDisabled = submitted;
@@ -66,47 +77,59 @@
     </span>
 
     {#if !submitted || round > max_rounds}
-		<span class="right-align">Year:</span>
-        <input
-            id="guess-input"
-            bind:value={guess}
-            placeholder="Enter guess (minus for BCE)"
-            disabled={round > max_rounds}
-            style="min-width: 240px;"
-            on:keydown={async (e) => {
-                if (round > max_rounds) return;
+        <span class="right-align">Year:</span>
+        <div class="input-era-row">
+            <input
+                id="guess-input"
+                bind:value={guess}
+                placeholder="Enter guess"
+                disabled={round > max_rounds}
+                style="min-width: 140px;"
+                on:keydown={async (e) => {
+                    if (round > max_rounds) return;
 
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    setInputError('');
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        setInputError('');
 
-                    if (!submitted) {
-                        let ge = guess_errors(guess, min_year, max_year);
-                        if (ge) return;
-                        setGuessAge(guess);
-                        await getScore();
-                        setHintPenalty(100.0);
-                        sessionStorage.setItem('hint_penalty', '100.0');
-                        setSubmitted(true);
-                    } else if (submitted && round < max_rounds) {
-                        setSubmitted(false);
-                        setRound(round + 1);
-                        sessionStorage.setItem('round', (round + 1).toString());
-                        const next = trueAges.shift();
-                        setTrueAges([...trueAges]);
-                        setTrueAge(next);
-                        sessionStorage.setItem('trueAge', String(next));
-                        await updateMap(L);
-                        setGuess('');
-                        setGuessAge('');
-                    } else if (submitted && round >= max_rounds) {
-                        setSubmitted(false);
-                        setRound(round + 1);
-                        sessionStorage.setItem('round', (round + 1).toString());
+                        if (!submitted) {
+                            let ge = guess_errors(guess, min_year, max_year);
+                            if (ge) return;
+                            // Use era-adjusted guess
+                            setGuessAge(String(getEraAdjustedGuess(guess, era)));
+                            await getScore();
+                            setHintPenalty(100.0);
+                            sessionStorage.setItem('hint_penalty', '100.0');
+                            setSubmitted(true);
+                        } else if (submitted && round < max_rounds) {
+                            setSubmitted(false);
+                            setRound(round + 1);
+                            sessionStorage.setItem('round', (round + 1).toString());
+                            const next = trueAges.shift();
+                            setTrueAges([...trueAges]);
+                            setTrueAge(next);
+                            sessionStorage.setItem('trueAge', String(next));
+                            await updateMap(L);
+                            setGuess('');
+                            setGuessAge('');
+                        } else if (submitted && round >= max_rounds) {
+                            setSubmitted(false);
+                            setRound(round + 1);
+                            sessionStorage.setItem('round', (round + 1).toString());
+                        }
                     }
-                }
-            }}
-        />
+                }}
+            />
+            <button
+                class="era-switch"
+                type="button"
+                aria-label="Switch CE/BCE"
+                on:click={() => era = era === 'CE' ? 'BCE' : 'CE'}
+                disabled={round > max_rounds}
+            >
+                {era}
+            </button>
+        </div>
     {/if}
 
     {#if submitted === false}
