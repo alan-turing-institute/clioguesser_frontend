@@ -89,7 +89,10 @@
 				layer.options.pane = 'borders';
 
 				layer.on('mouseover', () => {
-					group.eachLayer((l) => l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 }));
+					group.eachLayer((l) => {
+						l.setStyle({ weight: 3, color: '#FFD700', fillOpacity: 1 });
+						l.bringToFront(); // 💡 ensures the highlighted outline goes above others
+					});
 
 					if (group.wasClicked) {
 						highlightedCountry = group.the_name;
