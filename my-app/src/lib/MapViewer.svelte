@@ -7,18 +7,14 @@
 	export let round: number;
 	export let max_rounds: number;
 	export let score: number;
-	export let min_year: number;
-	export let max_year: number;
 	export let submitted: boolean;
 	export let guessAge: string;
 	export let showIntroHelp: boolean;
-	export let formatYear: (y: number) => string;
 
 	let highlightedCountry: string | null = null;
 
 	export let trueAge: number;
 	export let hint_penalty: number;
-	export let onHintUsed: (penalty: number) => void;
 	export let era: 'CE' | 'BCE';
 
 	let map;

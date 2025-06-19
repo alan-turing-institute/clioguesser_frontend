@@ -68,7 +68,6 @@
 	}
 
 	let inputDisabled = false;
-	$: inputDisabled = submitted;
 </script>
 
 <div class="flex h-16 w-full items-center justify-center gap-4">
