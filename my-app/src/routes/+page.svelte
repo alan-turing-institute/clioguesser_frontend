@@ -17,7 +17,7 @@
 	async function fetchGeojsonFeatures() {
 		try {
 			console.log('Getting data for year:', trueAge);
-			const response = await fetch(`http://localhost:8000/api/polities/?year=${trueAge}`, {
+			const response = await fetch(`https://clioguesser-backend.azurewebsites.net/api/polities/?year=${trueAge}`, {
 				headers: {
 					'Content-Type': 'application/json'
 				},
@@ -114,7 +114,7 @@
 	});
 	async function getScore() {
 		const response = await fetch(
-			`http://localhost:8000/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
+			`https://clioguesser-backend.azurewebsites.net/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
 			{
 				headers: {
 					'Content-Type': 'application/json'
