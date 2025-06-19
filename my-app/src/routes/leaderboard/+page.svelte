@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-  const API_HOST = import.meta.env.VITE_API_HOST;
+	const API_HOST = import.meta.env.VITE_API_HOST;
 
 	let leaderboard = [];
 	let loading = true;
@@ -66,7 +66,9 @@
 		</table>
 	{/if}
 	<p>
-		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank"
+			>Seshat: Global History Databank</a
+		>.
 	</p>
 </main>
 

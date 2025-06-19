@@ -144,44 +144,44 @@
 	<div id="map" class="map-container"></div>
 	{#if showIntroHelp === false}
 		<div
-			class="bg-white/80 dark:bg-black/60 text-black dark:text-white p-4 rounded shadow max-w-sm text-sm absolute top-2 right-2 z-[1000] pointer-events-none"
+			class="pointer-events-none absolute top-2 right-2 z-[1000] max-w-sm rounded bg-white/80 p-4 text-sm text-black shadow dark:bg-black/60 dark:text-white"
 		>
-			<div class="text-red-600 text-xl font-bold">Round {round}/{max_rounds}</div>
-			<div class="text-black dark:text-white text-xl">
+			<div class="text-xl font-bold text-red-600">Round {round}/{max_rounds}</div>
+			<div class="text-xl text-black dark:text-white">
 				<span class="font-bold">Current score:</span>
-				<span class="font-normal ml-1">{formatScore(score)}</span>
+				<span class="ml-1 font-normal">{formatScore(score)}</span>
 			</div>
 		</div>
 		{#if submitted}
 			<div
-				class="absolute top-2 left-15 transform
-	       bg-white/80 dark:bg-black/60 text-black dark:text-white
-	       p-4 rounded shadow max-w-sm text-sm z-[1000] pointer-events-none"
+				class="pointer-events-none absolute top-2 left-15
+	       z-[1000] max-w-sm transform rounded
+	       bg-white/80 p-4 text-sm text-black shadow dark:bg-black/60 dark:text-white"
 			>
-				<div class="text-red-600 text-xl font-bold">
+				<div class="text-xl font-bold text-red-600">
 					You guessed {formatEraAdjustedYear(guessAge)}
 				</div>
 
-				<div class="text-red-600 text-xl font-bold">
+				<div class="text-xl font-bold text-red-600">
 					The true year was {formatEraAdjustedYear(trueAge)}
 				</div>
 
-				<div class="text-red-600 text-xl font-bold">
+				<div class="text-xl font-bold text-red-600">
 					You were off by {errorMargin} years
 				</div>
 			</div>
 		{/if}
 		<div
 			class="
-				absolute bottom-4 left-4 bg-white/80 text-black dark:text-white
-				dark:bg-black/60 px-6 py-3 rounded-xl shadow-2xl z-[1001]
-			    text-lg font-bold border border-white dark:border-black backdrop-blur-sm
-				pointer-events-none w-[250px] h-[100px] flex flex-col justify-start
-				items-center text-center gap-1"
+				pointer-events-none absolute bottom-4 left-4 z-[1001] flex
+				h-[100px] w-[250px] flex-col items-center justify-start gap-1
+			    rounded-xl border border-white bg-white/80 px-6 py-3
+				text-center text-lg font-bold text-black shadow-2xl backdrop-blur-sm
+				dark:border-black dark:bg-black/60 dark:text-white"
 		>
 			<div class="text-base font-semibold">Current Hint</div>
 			<div
-				class="w-full text-center font-normal leading-tight whitespace-pre-wrap break-words"
+				class="w-full text-center leading-tight font-normal break-words whitespace-pre-wrap"
 				style="font-size: clamp(0.75rem, 3.5vw, 1.125rem); line-height: 1.1;"
 			>
 				{highlightedCountry || ''}

@@ -13,7 +13,7 @@
 	}
 </script>
 
-<div class="flex flex-col justify-center items-center text-center">
+<div class="flex flex-col items-center justify-center text-center">
 	<h1 class="text-3xl font-bold">Clioguesser</h1>
 
 	<p class="mt-2">
