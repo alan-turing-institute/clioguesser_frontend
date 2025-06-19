@@ -8,6 +8,8 @@ services:
     container_name: clioguesser-frontend-nginx
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - ./.env
     networks:
       - clioguesser-net
 

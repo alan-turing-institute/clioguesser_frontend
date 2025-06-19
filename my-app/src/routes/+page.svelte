@@ -1,175 +1,205 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Button from '$lib/Button.svelte';
-	import { shuffledYears } from '$lib/Shuffle.js';
+	import { shuffle_years } from '$lib/Shuffle.js';
+	import GuessInput from '$lib/GuessInput.svelte';
+	import GameOverModal from '$lib/GameOverModal.svelte';
+	import MapViewer from '$lib/MapViewer.svelte';
+	import GameHeader from '$lib/GameHeader.svelte';
+	import IntroHelpModal from '$lib/IntroHelpModal.svelte';
+	import { getScore as fetchScore, submitLeaderboard as submitScore } from '$lib/api';
 
-	async function pick_year({ min_year, max_year }) {
-		return Math.floor(Math.random() * (max_year - min_year + 1)) + min_year;
-	}
-
+	let guessInputKey = 0;
 	let guess = '';
 	let guessAge = '';
-	let min_year = 1500;
+	let min_year = -1000;
 	let max_year = 2024;
-	let score = null;
-	let trueAge = null;
+	let score: number = 0;
+	let api_score = 0;
+	let trueAges: number[] = [];
+	let trueAge: number | null = null;
+	let round = 1;
+	let max_rounds = 10;
+	let submitted = false;
+	let initials = '';
+	let initialsError = '';
+	let inputError = '';
+	let hint_penalty: number = 100.0;
+	let showIntroHelp = true;
+	let finished = false;
 
-	async function fetchGeojsonFeatures() {
-		try {
-			console.log('Getting data for year:', trueAge);
-			const response = await fetch(`https://clioguesser-backend.azurewebsites.net/api/polities/?year=${trueAge}`, {
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				credentials: 'include'
-			});
-			const jsonData = await response.json();
+	let era: 'CE' | 'BCE' = 'CE';
+	$: showIntroHelp;
+	$: console.log(`Current hint penalty: ${hint_penalty}`);
+	function setEra(val: 'CE' | 'BCE') {
+		era = val;
+	}
 
-			const features = jsonData.shapes.map((shape) => {
-        console.log('Shape name:', shape.name);
-				return {
-					geometry: JSON.parse(shape.geom_json),
-					colour: shape.colour,
-					shape_name: shape.member_of || shape.name // Use member_of if available, otherwise use name
-				};
-			});
+	onMount(() => {
+		// restore from sessionStorage
+		const stored = (key: string, fallback: any) => sessionStorage.getItem(key) ?? fallback;
+		hint_penalty = Number(stored('hint_penalty', '100.0'));
+		trueAge = Number(stored('trueAge', 'NaN')) || null;
+		score = Number(stored('score', '0'));
+		round = Number(stored('round', '1'));
 
-			console.log('Parsed GeoJSON features:', features);
-			return features;
-		} catch (error) {
-			console.error('Failed to fetch or parse GeoJSON:', error);
-			return [];
+		if (!trueAge) {
+			trueAges = shuffle_years(min_year, max_year, max_rounds);
+			trueAge = trueAges.shift();
+			sessionStorage.setItem('trueAge', String(trueAge));
 		}
-	}
-
-	let map;
-
-	async function updateMap() {
-		const features = await fetchGeojsonFeatures();
-		const groups = {}; // group_id -> LayerGroup
-		features.forEach((feature) => {
-			const layer = L.geoJSON(feature.geometry, {
-				style: {
-					color: 'black',
-					weight: 1,
-					opacity: 1,
-					fill: true,
-					fillColor: feature.colour,
-					fillOpacity: 1
-				}
-			});
-
-			const groupId = feature.shape_name; // Assuming shape_id is the group identifier
-			if (!groups[groupId]) {
-				groups[groupId] = L.layerGroup();
-			}
-
-			groups[groupId].addLayer(layer);
-		});
-
-		// Add hover events to each group
-		Object.values(groups).forEach((group) => {
-			group.eachLayer((layer) => {
-				layer.on('mouseover', () => {
-					group.eachLayer((l) => {
-						l.setStyle({
-							weight: 3,
-							color: '#FFD700',
-							fillOpacity: 0.7
-						});
-					});
-				});
-
-				layer.on('mouseout', () => {
-					group.eachLayer((l) => {
-						l.setStyle({
-							weight: 1,
-							color: 'black',
-							fillOpacity: 1
-						});
-					});
-				});
-			});
-
-			group.addTo(map);
-		});
-	}
-
-	onMount(async () => {
-		// TODO: Update so we use this instead of a random year
-		console.log('First year', shuffledYears.shift());
-		const L = await import('leaflet');
-		trueAge = await pick_year({ min_year, max_year });
-		map = L.map('map', { crs: L.CRS.EPSG3857 }).setView([0, 0], 2);
-
-		L.tileLayer(
-			'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-			{
-				maxZoom: 10,
-				minZoom: 1,
-				attribution: '© ArcGIS, Powered by Esri'
-			}
-		).addTo(map);
-		await updateMap();
+		if (!trueAges.length) {
+			trueAges = shuffle_years(min_year, max_year, max_rounds).filter((y) => y !== trueAge);
+		}
 	});
+
 	async function getScore() {
-		const response = await fetch(
-			`https://clioguesser-backend.azurewebsites.net/api/score/?min_year=${min_year}&max_year=${max_year}&true_year=${trueAge}&guess_year=${guessAge}`,
-			{
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				credentials: 'include'
-			}
-		);
-		if (response.ok) {
-			const data = await response.json();
-			score = data.score;
-		} else {
-			score = 'Error fetching score';
+		const data = await fetchScore({ min_year, max_year, trueAge, guessAge, hint_penalty });
+		if (!data) return;
+		api_score = data.score;
+		score += api_score;
+		sessionStorage.setItem('score', score.toString());
+	}
+
+	async function handleSubmitLeaderboard(initials: string): Promise<boolean> {
+		if (initials.length !== 3) {
+			initialsError = 'Initials must be exactly 3 characters.';
+			return false;
 		}
+		initialsError = '';
+		const result = await submitScore(initials, score);
+		if (!result) {
+			initialsError = 'Failed to submit score. Please try again.';
+			return false;
+		}
+		return true;
+	}
+
+	async function resetGame() {
+		guess = '';
+		guessAge = '';
+		hint_penalty = 100.0;
+		score = 0;
+		round = 1;
+		submitted = false;
+		trueAges = shuffle_years(min_year, max_year, max_rounds);
+		trueAge = trueAges.shift();
+
+		sessionStorage.setItem('score', '0');
+		sessionStorage.setItem('round', '1');
+		sessionStorage.setItem('hint_penalty', '100.0');
+		sessionStorage.setItem('trueAge', String(trueAge));
+	}
+
+	function formatYear(year: number): string {
+		return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
 	}
 </script>
 
-<div class="container">
-	<h1>Clioguesser</h1>
+<div class="container relative">
+	<a class="leaderboard-link" href="/leaderboard">
+		<span role="img" aria-label="Leaderboard">🏅</span>
+	</a>
 
-	<p>Do you think you know your history? Guess the age of this map based on the polity outlines.</p>
-
-	<p>
-		Age:
-		<input bind:value={guess} placeholder="enter your guess" />
-		<Button
-			class="primary sm"
-			on:click={async () => {
-				guessAge = guess;
-				await getScore();
-			}}>Submit</Button
+	<div style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
+		<button
+			class="help-btn"
+			style="font-size: 2rem; padding: 1rem 1.5rem;"
+			on:click={() => (showIntroHelp = true)}
 		>
-	</p>
+			<span role="img" aria-label="Help">❓</span>
+		</button>
+	</div>
 
-	{#if score !== null}
-		<p>
-			The actual age of the map is {trueAge} years.
-		</p>
-		<p>
-			{#if guessAge == trueAge}
-				<span class="correct">Correct! Very impressive</span>
-			{:else if Math.abs(guessAge - trueAge) < 50}
-				<span class="incorrect"
-					>Nearly! You were only off by {Math.abs(guessAge - trueAge)} years, good try</span
-				>
-			{:else}
-				<span class="incorrect"
-					>Incorrect! You were out by {Math.abs(guessAge - trueAge)} years, oh dear</span
-				>
-			{/if}
-		</p>
-		<p>Score: {score}</p>
-	{/if}
+	<IntroHelpModal
+		show={showIntroHelp}
+		on:close={() => (showIntroHelp = false)}
+		{min_year}
+		{max_year}
+	/>
 
-	<div id="map"></div>
-	<p>
-		Based on <a href="https://seshat-db.com/">Seshat: Global History Databank</a>.
+	<!-- Wrap header + input in a fixed-gap column -->
+	<div class="flex flex-col gap-4 items-center">
+		<div class="flex-none">
+			<GameHeader
+				{round}
+				{max_rounds}
+				{score}
+				{min_year}
+				{max_year}
+				{submitted}
+				{guessAge}
+				{trueAge}
+			/>
+		</div>
+
+		<!-- Fixed height or min-height to prevent shifting -->
+		{#key round}
+			<div class="flex items-center gap-4 justify-center w-full">
+				<GuessInput
+					{guess}
+					{round}
+					{max_rounds}
+					{min_year}
+					{max_year}
+					{submitted}
+					{inputError}
+					{hint_penalty}
+					{guessAge}
+					{trueAge}
+					{trueAges}
+					{getScore}
+					{resetGame}
+					{era}
+					{setEra}
+					{finished}
+					{guessInputKey}
+					setFinished={(val) => (finished = val)}
+					setGuess={(val) => (guess = val)}
+					setGuessAge={(val) => (guessAge = val)}
+					setInputError={(val) => (inputError = val)}
+					setSubmitted={(val) => (submitted = val)}
+					setHintPenalty={(val) => (hint_penalty = val)}
+					setRound={(val) => (round = val)}
+					setTrueAge={(val) => (trueAge = val)}
+					setTrueAges={(val) => (trueAges = val)}
+				/>
+			</div>
+		{/key}
+	</div>
+
+	<GameOverModal
+		show={round == max_rounds && finished}
+		{score}
+		{initials}
+		{initialsError}
+		setInitials={(val) => (initials = val)}
+		setInitialsError={(val) => (initialsError = val)}
+		submitLeaderboard={handleSubmitLeaderboard}
+		{resetGame}
+	/>
+
+	<MapViewer
+		bind:showIntroHelp
+		{trueAge}
+		{hint_penalty}
+		{round}
+		{max_rounds}
+		{score}
+		{min_year}
+		{max_year}
+		{submitted}
+		{guessAge}
+		{formatYear}
+		{era}
+		on:hintPenaltyUpdate={(e) => {
+			hint_penalty = e.detail;
+			sessionStorage.setItem('hint_penalty', String(hint_penalty));
+		}}
+	/>
+
+	<p class="text-center mt-4 text-sm text-gray-400">
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank"
+			>Seshat: Global History Databank</a
+		>.
 	</p>
 </div>
