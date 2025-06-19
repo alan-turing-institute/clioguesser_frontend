@@ -9,7 +9,6 @@
 	export let initials: string;
 	export let initialsError: string;
 
-	export let setInitials: (val: string) => void;
 	export let setInitialsError: (val: string) => void;
 
 	export let submitLeaderboard: (initials: string) => Promise<boolean>;

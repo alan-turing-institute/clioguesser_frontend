@@ -72,18 +72,6 @@
 		background: rgba(0, 0, 0, 0.4);
 		z-index: 1000;
 	}
-	.modal-content {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		padding: 2rem 2.5rem;
-		border-radius: 30px;
-		box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
-		z-index: 1001;
-		max-width: 90vw;
-		width: 600px;
-	}
 	h2 {
 		font-size: 2rem;
 		margin: 1.5rem 0 1.5rem 0;

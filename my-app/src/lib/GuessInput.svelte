@@ -8,11 +8,8 @@
 	export let submitted: boolean;
 	export let inputError: string;
 	export let hint_penalty: number;
-	export let guessAge: string;
-	export let trueAge: number | null;
 	export let trueAges: number[];
 	export let L: any;
-	export let finished: boolean;
 
 	export let getScore: () => Promise<void>;
 	export let updateMap: (L: any) => Promise<void>;
@@ -205,12 +202,6 @@
 </div>
 
 <style>
-	.left-align {
-		text-align: left;
-		display: flex;
-		justify-content: space-between;
-		gap: 2rem;
-	}
 	.centre-label {
 		display: flex;
 		align-items: center;
