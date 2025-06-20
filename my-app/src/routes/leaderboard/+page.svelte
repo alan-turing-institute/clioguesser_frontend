@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-  const API_HOST = import.meta.env.VITE_API_HOST;
+	const API_HOST = import.meta.env.VITE_API_HOST;
 
 	let leaderboard = [];
 	let loading = true;
@@ -66,7 +66,9 @@
 		</table>
 	{/if}
 	<p>
-		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank">Seshat: Global History Databank</a>.
+		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank"
+			>Seshat: Global History Databank</a
+		>.
 	</p>
 </main>
 
@@ -189,16 +191,6 @@ Tip: Place a map image at /static/map_icon.png or update the src above to your p
 		color: #fff;
 	}
 
-	#map {
-		margin-top: 3rem;
-		width: 90vw;
-		max-width: 1200px;
-		min-height: 240px;
-		border-radius: 18px;
-		background: #222244;
-		box-shadow: 0 0 24px #3333ff55;
-	}
-
 	a {
 		color: #ffe600;
 		text-shadow: 0 0 6px #ff00cc;
@@ -229,9 +221,6 @@ Tip: Place a map image at /static/map_icon.png or update the src above to your p
 		td {
 			padding: 0.7rem 0.5rem;
 			font-size: 1rem;
-		}
-		#map {
-			min-height: 120px;
 		}
 		h1 {
 			font-size: 2rem;

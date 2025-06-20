@@ -8,11 +8,8 @@
 	export let submitted: boolean;
 	export let inputError: string;
 	export let hint_penalty: number;
-	export let guessAge: string;
-	export let trueAge: number | null;
 	export let trueAges: number[];
 	export let L: any;
-	export let finished: boolean;
 
 	export let getScore: () => Promise<void>;
 	export let updateMap: (L: any) => Promise<void>;
@@ -68,16 +65,15 @@
 	}
 
 	let inputDisabled = false;
-	$: inputDisabled = submitted;
 </script>
 
-<div class="flex items-center gap-4 justify-center w-full h-16">
+<div class="flex h-16 w-full items-center justify-center gap-4">
 	{#if !submitted || round > max_rounds}
 		<span class="text">Year:</span>
 		<div class="input-era-row">
 			<input
 				id="guess-input"
-				class="border rounded px-2 py-1 text-black"
+				class="rounded border px-2 py-1 text-black"
 				bind:value={guess}
 				placeholder="Enter guess"
 				disabled={round > max_rounds}
@@ -189,7 +185,7 @@
 			>
 		</div>
 	{/if}
-	
+
 	{#if !submitted}
 		<span class="centre-label" class:pop-effect={popHint}>
 			Hint modifier: {Math.round(hint_penalty)}%
@@ -206,12 +202,6 @@
 </div>
 
 <style>
-	.left-align {
-		text-align: left;
-		display: flex;
-		justify-content: space-between;
-		gap: 2rem;
-	}
 	.centre-label {
 		display: flex;
 		align-items: center;

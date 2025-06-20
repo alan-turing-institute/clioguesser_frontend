@@ -95,7 +95,7 @@
 	}
 </script>
 
-<div class="container relative">
+<div class="relative container">
 	<a class="leaderboard-link" href="/leaderboard">
 		<span role="img" aria-label="Leaderboard">🏅</span>
 	</a>
@@ -118,7 +118,7 @@
 	/>
 
 	<!-- Wrap header + input in a fixed-gap column -->
-	<div class="flex flex-col gap-4 items-center">
+	<div class="flex flex-col items-center gap-4">
 		<div class="flex-none">
 			<GameHeader
 				{round}
@@ -134,7 +134,7 @@
 
 		<!-- Fixed height or min-height to prevent shifting -->
 		{#key round}
-			<div class="flex items-center gap-4 justify-center w-full">
+			<div class="flex w-full items-center justify-center gap-4">
 				<GuessInput
 					{guess}
 					{round}
@@ -197,7 +197,7 @@
 		}}
 	/>
 
-	<p class="text-center mt-4 text-sm text-gray-400">
+	<p class="mt-4 text-center text-sm text-gray-400">
 		Learn more at <a href="https://seshat-db.com/core/world_map" target="_blank"
 			>Seshat: Global History Databank</a
 		>.

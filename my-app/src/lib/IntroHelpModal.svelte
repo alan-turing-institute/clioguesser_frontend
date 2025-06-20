@@ -27,37 +27,41 @@
 
 {#if show}
 	<div
-		class="modal-backdrop bg-white dark:bg-black bg-opacity-90 fixed inset-0 z-[1000] flex items-center justify-center"
+		class="modal-backdrop bg-opacity-90 fixed inset-0 z-[1000] flex items-center justify-center bg-white dark:bg-black"
 	>
 		<div
-	class="flex flex-col items-center text-center
-	       p-4 sm:p-6 rounded-[30px] shadow-2xl z-[1001] max-w-[80vw] w-[600px]
-	       bg-[var(--color-card-bg)] border border-black dark:border-gray-800"
-	role="dialog"
-	aria-modal="true"
-	aria-label="How to Play"
->
-	<h2 class="text-black dark:text-white font-bold text-4xl mb-4">Welcome to Clioguesser</h2>
+			class="z-[1001] flex w-[600px] max-w-[80vw]
+	       flex-col items-center rounded-[30px] border border-black bg-[var(--color-card-bg)] p-4
+	       text-center shadow-2xl sm:p-6 dark:border-gray-800"
+			role="dialog"
+			aria-modal="true"
+			aria-label="How to Play"
+		>
+			<h2 class="mb-4 text-4xl font-bold text-black dark:text-white">Welcome to Clioguesser</h2>
 
-	<ul class="text-black dark:text-white space-y-1 leading-tight mb-4">
-		<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
-		<li>Use the polity outlines to guess the age of the map</li>
-		<li>Use the CE / BCE button to change the era</li>
-		<li>Submit your guess to see how close you are</li>
-		<li>Hover over a polity to show its boundaries</li>
-		<li>You can use hints if you get stuck. Click on a country to see its name in the bottom left</li>
-		<li><span class="font-bold text-red-600">WARNING</span>: each hint reduces your score for that round!</li>
-	</ul>
+			<ul class="mb-4 space-y-1 leading-tight text-black dark:text-white">
+				<li>You will be shown 10 maps from {formatYear(min_year)} to {formatYear(max_year)}.</li>
+				<li>Use the polity outlines to guess the age of the map</li>
+				<li>Use the CE / BCE button to change the era</li>
+				<li>Submit your guess to see how close you are</li>
+				<li>Hover over a polity to show its boundaries</li>
+				<li>
+					You can use hints if you get stuck. Click on a country to see its name in the bottom left
+				</li>
+				<li>
+					<span class="font-bold text-red-600">WARNING</span>: each hint reduces your score for that
+					round!
+				</li>
+			</ul>
 
-	<button
-		class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-green-600 dark:text-green-400 font-bold py-2 px-6 rounded"
-		on:click={closeModal}
-		aria-label="Close"
-	>
-		Play game
-	</button>
-</div>
-
+			<button
+				class="rounded bg-gray-200 px-6 py-2 font-bold text-green-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600"
+				on:click={closeModal}
+				aria-label="Close"
+			>
+				Play game
+			</button>
+		</div>
 	</div>
 {/if}
 
@@ -67,18 +71,6 @@
 		inset: 0;
 		background: rgba(0, 0, 0, 0.4);
 		z-index: 1000;
-	}
-	.modal-content {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		padding: 2rem 2.5rem;
-		border-radius: 30px;
-		box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
-		z-index: 1001;
-		max-width: 90vw;
-		width: 600px;
 	}
 	h2 {
 		font-size: 2rem;
